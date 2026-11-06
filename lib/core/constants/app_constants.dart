@@ -1,7 +1,7 @@
 ﻿class AppConstants {
   AppConstants._();
 
-  static const String appName = 'NorthGrind';
+  static const String appName = 'Karasko';
   static const String currencyCode = 'IDR';
   static const String currencySymbol = 'Rp';
   static const String coffeeCategory = 'Coffee';

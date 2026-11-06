@@ -1,5 +1,13 @@
-﻿// TODO: Define the fields, constructors, and serialization methods for CartItem.
+﻿import 'product.dart';
 
 class CartItem {
-  const CartItem();
+  final Product product;
+  int quantity;
+
+  CartItem({
+    required this.product,
+    this.quantity = 1,
+  });
+
+  int get subtotal => product.price * quantity;
 }
