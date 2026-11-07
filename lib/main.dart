@@ -41,7 +41,7 @@ class MainApp extends StatelessWidget {
           surface: const Color(0xFFF9F9F7),
         ),
       ),
-      home: AdminOrderListScreen(),
+      home: SplashScreen(),
     );
   }
 }
