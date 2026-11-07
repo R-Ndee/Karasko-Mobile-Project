@@ -1,4 +1,4 @@
 ﻿# banners
 
-Folder aset NorthGrind. Tambahkan aset yang sesuai di sini.
+Folder aset Karasko. Tambahkan aset yang sesuai di sini.
 

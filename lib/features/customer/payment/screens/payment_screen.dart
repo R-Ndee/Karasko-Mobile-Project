@@ -1,5 +1,6 @@
 ﻿
 import 'package:flutter/material.dart';
+import 'package:karasko_mobile_project/features/customer/home/screens/home_screen.dart';
 
 class PaymentScreen extends StatefulWidget {
   final String paymentMethod;
@@ -151,7 +152,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
           width: double.infinity,
           child: ElevatedButton(
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const HomeScreen(),
+                ),
+              );
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: forestGreen,

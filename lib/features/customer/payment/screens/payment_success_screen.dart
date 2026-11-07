@@ -11,7 +11,7 @@ class PaymentSuccessScreen extends StatelessWidget {
       ),
       body: const Center(
         child: Text(
-          'Payment Success Screen - NorthGrind',
+          'Payment Success Screen - Karasko',
           textAlign: TextAlign.center,
         ),
       ),
