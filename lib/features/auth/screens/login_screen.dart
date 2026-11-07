@@ -7,6 +7,7 @@ import '../../../providers/cart_provider.dart';
 import '../../customer/cart/screens/cart_screen.dart';
 import '../widgets/auth_text_field.dart';
 import 'register_screen.dart';
+import '../../admin/dashboard/screens/admin_dashboard_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -62,7 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
-          builder: (_) => const CartScreen(),
+          builder: (_) => const AdminDashboardScreen(),
         ),
         (route) => false,
       );
