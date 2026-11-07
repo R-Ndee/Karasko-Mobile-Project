@@ -11,7 +11,7 @@ class EditProductScreen extends StatelessWidget {
       ),
       body: const Center(
         child: Text(
-          'Edit Product Screen - NorthGrind',
+          'Edit Product Screen - Karasko',
           textAlign: TextAlign.center,
         ),
       ),

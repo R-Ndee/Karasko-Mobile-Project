@@ -11,7 +11,7 @@ class ActiveOrderScreen extends StatelessWidget {
       ),
       body: const Center(
         child: Text(
-          'Active Order Screen - NorthGrind',
+          'Active Order Screen - Karasko',
           textAlign: TextAlign.center,
         ),
       ),

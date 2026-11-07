@@ -11,7 +11,7 @@ class AdminProductListScreen extends StatelessWidget {
       ),
       body: const Center(
         child: Text(
-          'Admin Product List Screen - NorthGrind',
+          'Admin Product List Screen - Karasko',
           textAlign: TextAlign.center,
         ),
       ),

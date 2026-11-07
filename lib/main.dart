@@ -4,8 +4,6 @@ import 'features/splash/screens/splash_screen.dart';
 import 'package:provider/provider.dart';
 import 'providers/cart_provider.dart';
 import 'providers/order_provider.dart';
-import 'package:karasko_mobile_project/features/admin/orders/screens/admin_order_list_screen.dart';
-import 'package:karasko_mobile_project/features/customer/menu/screens/menu_screen.dart';
 
 void main() {
   runApp(

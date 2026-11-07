@@ -11,7 +11,7 @@ class AdminDashboardScreen extends StatelessWidget {
       ),
       body: const Center(
         child: Text(
-          'Admin Dashboard Screen - NorthGrind',
+          'Admin Dashboard Screen - Karasko',
           textAlign: TextAlign.center,
         ),
       ),
