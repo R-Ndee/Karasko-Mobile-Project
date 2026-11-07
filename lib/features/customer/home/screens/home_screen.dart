@@ -11,7 +11,7 @@ class HomeScreen extends StatelessWidget {
       ),
       body: const Center(
         child: Text(
-          'Home Screen - NorthGrind',
+          'Home Screen - Karasko',
           textAlign: TextAlign.center,
         ),
       ),

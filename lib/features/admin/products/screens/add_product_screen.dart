@@ -11,7 +11,7 @@ class AddProductScreen extends StatelessWidget {
       ),
       body: const Center(
         child: Text(
-          'Add Product Screen - NorthGrind',
+          'Add Product Screen - Karasko',
           textAlign: TextAlign.center,
         ),
       ),

@@ -783,7 +783,7 @@ class _ProductOptionsSheetState extends State<_ProductOptionsSheet> {
                     SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        'Standard NorthGrind Quality\nRacikan original menjaga profil seduh murni tanpa topping atau sirup berbayar tambahan.',
+                        'Standard Karasko Quality\nRacikan original menjaga profil seduh murni tanpa topping atau sirup berbayar tambahan.',
                         style: TextStyle(
                           color: _forest,
                           fontSize: 10,

@@ -11,7 +11,7 @@ class ProfileScreen extends StatelessWidget {
       ),
       body: const Center(
         child: Text(
-          'Profile Screen - NorthGrind',
+          'Profile Screen - Karasko',
           textAlign: TextAlign.center,
         ),
       ),

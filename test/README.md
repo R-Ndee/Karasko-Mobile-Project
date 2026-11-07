@@ -1,3 +1,3 @@
 ﻿# Tests
 
-Tambahkan unit test dan widget test untuk fitur NorthGrind di folder ini.
+Tambahkan unit test dan widget test untuk fitur Karasko di folder ini.
