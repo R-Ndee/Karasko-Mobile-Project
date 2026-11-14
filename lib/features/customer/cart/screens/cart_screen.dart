@@ -1,4 +1,3 @@
-﻿
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -37,7 +36,6 @@ class _CartScreenState extends State<CartScreen> {
 
     for (int i = 0; i < digits.length; i++) {
       buffer.write(digits[i]);
-
       final remaining = digits.length - i - 1;
 
       if (remaining > 0 && remaining % 3 == 0) {
@@ -153,10 +151,7 @@ class _CartScreenState extends State<CartScreen> {
             const Text(
               'Yuk, pilih kopi favoritmu dan tambahkan ke keranjang.',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.black54,
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.black54),
             ),
           ],
         ),
@@ -180,11 +175,7 @@ class _CartScreenState extends State<CartScreen> {
               color: Colors.white.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(
-              Icons.coffee,
-              color: Colors.white,
-              size: 24,
-            ),
+            child: const Icon(Icons.coffee, color: Colors.white, size: 24),
           ),
           const SizedBox(width: 12),
           const Expanded(
@@ -212,10 +203,7 @@ class _CartScreenState extends State<CartScreen> {
               ],
             ),
           ),
-          const Icon(
-            Icons.local_cafe_outlined,
-            color: Colors.white70,
-          ),
+          const Icon(Icons.local_cafe_outlined, color: Colors.white70),
         ],
       ),
     );
@@ -266,11 +254,7 @@ class _CartScreenState extends State<CartScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                icon,
-                size: 18,
-                color: isSelected ? Colors.white : charcoal,
-              ),
+              Icon(icon, size: 18, color: isSelected ? Colors.white : charcoal),
               const SizedBox(width: 8),
               Text(
                 label,
@@ -327,14 +311,13 @@ class _CartScreenState extends State<CartScreen> {
         TextField(
           controller: _noteController,
           maxLines: 3,
+          maxLength: 150,
           decoration: InputDecoration(
-            hintText: 'Contoh: Mohon siapkan pesanan dengan baik...',
-            hintStyle: const TextStyle(
-              fontSize: 13,
-              color: Colors.black38,
-            ),
+            hintText: 'Contoh: Kurangi gula, tanpa sedotan...',
+            hintStyle: const TextStyle(fontSize: 13, color: Colors.black38),
             filled: true,
             fillColor: Colors.white,
+            counterStyle: const TextStyle(fontSize: 10),
             contentPadding: const EdgeInsets.all(14),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -362,11 +345,7 @@ class _CartScreenState extends State<CartScreen> {
               color: const Color(0xFFEAF1E9),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(
-              Icons.eco_outlined,
-              color: forestGreen,
-              size: 23,
-            ),
+            child: const Icon(Icons.eco_outlined, color: forestGreen, size: 23),
           ),
           const SizedBox(width: 12),
           const Expanded(
@@ -384,10 +363,7 @@ class _CartScreenState extends State<CartScreen> {
                 SizedBox(height: 4),
                 Text(
                   'Dukung penggunaan kemasan ramah lingkungan.',
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: Colors.black54,
-                  ),
+                  style: TextStyle(fontSize: 11, color: Colors.black54),
                 ),
               ],
             ),
@@ -410,11 +386,7 @@ class _CartScreenState extends State<CartScreen> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Icon(
-          Icons.verified_user_outlined,
-          color: caramel,
-          size: 20,
-        ),
+        const Icon(Icons.verified_user_outlined, color: caramel, size: 20),
         const SizedBox(width: 10),
         Expanded(
           child: Text(
@@ -436,9 +408,7 @@ class _CartScreenState extends State<CartScreen> {
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(22),
-        ),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -450,16 +420,14 @@ class _CartScreenState extends State<CartScreen> {
       child: SafeArea(
         top: false,
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
                   'Total Item',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.black54,
-                  ),
+                  style: TextStyle(fontSize: 13, color: Colors.black54),
                 ),
                 Text(
                   '$totalItems item',
@@ -477,10 +445,7 @@ class _CartScreenState extends State<CartScreen> {
               children: [
                 const Text(
                   'Subtotal',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.black54,
-                  ),
+                  style: TextStyle(fontSize: 14, color: Colors.black54),
                 ),
                 Text(
                   formatRupiah(totalPrice),
@@ -499,7 +464,11 @@ class _CartScreenState extends State<CartScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const CheckoutScreen(),
+                    builder: (context) => CheckoutScreen(
+                      orderType: _orderType,
+                      useEcoPackaging: _useEcoPackaging,
+                      orderNote: _noteController.text.trim(),
+                    ),
                   ),
                 );
               },
