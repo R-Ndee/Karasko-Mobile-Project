@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 
 import '../../../models/product.dart';
 import '../../../providers/cart_provider.dart';
-import '../../customer/cart/screens/cart_screen.dart';
 import '../widgets/auth_text_field.dart';
 import 'register_screen.dart';
 import '../../admin/dashboard/screens/admin_dashboard_screen.dart';

@@ -41,8 +41,10 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         onTap: _onItemTapped,
         backgroundColor: BaseColor.white,
         selectedItemColor: BaseColor.karasko,
-        unselectedItemColor: Colors.grey,
-        selectedLabelStyle: BaseTypography.labelSmall,
+        unselectedItemColor: Colors.grey.shade500,
+        selectedLabelStyle: BaseTypography.labelSmall.copyWith(
+          fontWeight: FontWeight.w700,
+        ),
         unselectedLabelStyle: BaseTypography.labelSmall,
         type: BottomNavigationBarType.fixed,
         elevation: 8,
@@ -75,20 +77,33 @@ class _DashboardContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.all(BaseSize.s20),
+        padding: const EdgeInsets.fromLTRB(
+          BaseSize.s20,
+          BaseSize.s20,
+          BaseSize.s20,
+          BaseSize.s32,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildHeader(),
             Gap.h24,
             const _RevenueCard(),
-            Gap.h24,
+            Gap.h28,
             Text(
               'Ringkasan Bisnis',
               style: BaseTypography.headlineSmall,
             ),
-            Gap.h12,
+            Gap.h6,
+            Text(
+              'Gambaran singkat performa tokomu',
+              style: BaseTypography.bodySmall.copyWith(
+                color: Colors.grey.shade600,
+              ),
+            ),
+            Gap.h16,
             const Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   child: _StatisticCard(
@@ -111,9 +126,8 @@ class _DashboardContent extends StatelessWidget {
             ),
             Gap.h24,
             const _SalesChartCard(),
-            Gap.h24,
+            Gap.h28,
             const _RecentOrdersSection(),
-            Gap.h24,
           ],
         ),
       ),
@@ -122,7 +136,6 @@ class _DashboardContent extends StatelessWidget {
 
   Widget _buildHeader() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Expanded(
           child: Column(
@@ -132,6 +145,7 @@ class _DashboardContent extends StatelessWidget {
                 'KARASKO ADMIN',
                 style: BaseTypography.labelSmall.copyWith(
                   color: BaseColor.caramel,
+                  fontWeight: FontWeight.w700,
                   letterSpacing: 1.5,
                 ),
               ),
@@ -158,8 +172,9 @@ class _DashboardContent extends StatelessWidget {
             borderRadius: BorderRadius.circular(14),
           ),
           child: const Icon(
-            Icons.notifications_none,
+            Icons.notifications_none_rounded,
             color: BaseColor.white,
+            size: 22,
           ),
         ),
       ],
@@ -182,33 +197,48 @@ class _RevenueCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'TOTAL PENDAPATAN',
-            style: BaseTypography.labelSmall.copyWith(
-              color: BaseColor.white.withValues(alpha: 0.75),
-              letterSpacing: 1,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'TOTAL PENDAPATAN',
+                style: BaseTypography.labelSmall.copyWith(
+                  color: BaseColor.white.withValues(alpha: 0.75),
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 1.2,
+                ),
+              ),
+              Icon(
+                Icons.account_balance_wallet_outlined,
+                size: 19,
+                color: BaseColor.white.withValues(alpha: 0.7),
+              ),
+            ],
           ),
           Gap.h12,
           Text(
             'Rp 4.850.000',
             style: BaseTypography.displaySmall.copyWith(
               color: BaseColor.white,
+              fontWeight: FontWeight.w700,
             ),
           ),
           Gap.h12,
           Row(
             children: [
               const Icon(
-                Icons.trending_up,
+                Icons.trending_up_rounded,
                 color: Color(0xFF9BD5A8),
                 size: 18,
               ),
               Gap.w6,
-              Text(
-                '12,5% dibanding periode sebelumnya',
-                style: BaseTypography.bodySmall.copyWith(
-                  color: const Color(0xFF9BD5A8),
+              Flexible(
+                child: Text(
+                  '12,5% dibanding periode sebelumnya',
+                  style: BaseTypography.bodySmall.copyWith(
+                    color: const Color(0xFFB9E0C2),
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
             ],
@@ -238,28 +268,48 @@ class _StatisticCard extends StatelessWidget {
       padding: const EdgeInsets.all(BaseSize.s16),
       decoration: BoxDecoration(
         color: BaseColor.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: BaseColor.charcoal.withValues(alpha: 0.08),
+          color: BaseColor.charcoal.withValues(alpha: 0.07),
         ),
+        boxShadow: [
+          BoxShadow(
+            color: BaseColor.charcoal.withValues(alpha: 0.025),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            icon,
-            color: BaseColor.caramel,
-            size: 24,
+          Container(
+            width: 38,
+            height: 38,
+            decoration: BoxDecoration(
+              color: BaseColor.cream,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(
+              icon,
+              color: BaseColor.caramel,
+              size: 21,
+            ),
           ),
-          Gap.h12,
+          Gap.h14,
           Text(
             value,
-            style: BaseTypography.headlineMedium,
+            style: BaseTypography.displaySmall.copyWith(
+              fontSize: 25,
+              fontWeight: FontWeight.w700,
+            ),
           ),
           Gap.h4,
           Text(
             title,
-            style: BaseTypography.titleSmall,
+            style: BaseTypography.titleSmall.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
           ),
           Gap.h4,
           Text(
@@ -292,10 +342,17 @@ class _SalesChartCard extends StatelessWidget {
       padding: const EdgeInsets.all(BaseSize.s16),
       decoration: BoxDecoration(
         color: BaseColor.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: BaseColor.charcoal.withValues(alpha: 0.08),
+          color: BaseColor.charcoal.withValues(alpha: 0.07),
         ),
+        boxShadow: [
+          BoxShadow(
+            color: BaseColor.charcoal.withValues(alpha: 0.025),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -313,10 +370,9 @@ class _SalesChartCard extends StatelessWidget {
           ),
           Gap.h24,
           SizedBox(
-            height: 140,
+            height: 155,
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: List.generate(
                 _sales.length,
                 (index) {
@@ -324,25 +380,38 @@ class _SalesChartCard extends StatelessWidget {
 
                   return Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 3,
+                      ),
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
+                          Text(
+                            _sales[index].toInt().toString(),
+                            style: BaseTypography.labelSmall.copyWith(
+                              color: isHighest
+                                  ? BaseColor.karasko
+                                  : Colors.grey.shade600,
+                              fontWeight: isHighest
+                                  ? FontWeight.w700
+                                  : FontWeight.w500,
+                            ),
+                          ),
+                          Gap.h8,
                           Expanded(
                             child: Align(
                               alignment: Alignment.bottomCenter,
                               child: FractionallySizedBox(
                                 heightFactor: _sales[index] / 100,
+                                widthFactor: 0.72,
                                 child: Container(
-                                  width: 18,
                                   decoration: BoxDecoration(
                                     color: isHighest
                                         ? BaseColor.karasko
                                         : BaseColor.karasko.withValues(
-                                            alpha: 0.25,
+                                            alpha: 0.22,
                                           ),
                                     borderRadius: const BorderRadius.vertical(
-                                      top: Radius.circular(6),
+                                      top: Radius.circular(7),
                                     ),
                                   ),
                                 ),
@@ -387,10 +456,15 @@ class _RecentOrdersSection extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {},
-              child: const Text(
+              style: TextButton.styleFrom(
+                foregroundColor: BaseColor.caramel,
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+              ),
+              child: Text(
                 'Lihat semua',
-                style: TextStyle(
+                style: BaseTypography.labelMedium.copyWith(
                   color: BaseColor.caramel,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),
@@ -404,7 +478,7 @@ class _RecentOrdersSection extends StatelessWidget {
           status: 'Selesai',
           statusColor: Color(0xFF28734F),
         ),
-        Gap.h12,
+        Gap.h10,
         const _OrderItem(
           orderId: 'ORD-00127',
           details: '3 item',
@@ -412,7 +486,7 @@ class _RecentOrdersSection extends StatelessWidget {
           status: 'Diproses',
           statusColor: BaseColor.caramel,
         ),
-        Gap.h12,
+        Gap.h10,
         const _OrderItem(
           orderId: 'ORD-00126',
           details: '1 item',
@@ -446,10 +520,17 @@ class _OrderItem extends StatelessWidget {
       padding: const EdgeInsets.all(BaseSize.s16),
       decoration: BoxDecoration(
         color: BaseColor.white,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: BaseColor.charcoal.withValues(alpha: 0.08),
+          color: BaseColor.charcoal.withValues(alpha: 0.07),
         ),
+        boxShadow: [
+          BoxShadow(
+            color: BaseColor.charcoal.withValues(alpha: 0.02),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -463,6 +544,7 @@ class _OrderItem extends StatelessWidget {
             child: const Icon(
               Icons.receipt_long_outlined,
               color: BaseColor.karasko,
+              size: 21,
             ),
           ),
           Gap.w12,
@@ -472,7 +554,9 @@ class _OrderItem extends StatelessWidget {
               children: [
                 Text(
                   orderId,
-                  style: BaseTypography.titleMedium,
+                  style: BaseTypography.titleSmall.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 Gap.h4,
                 Text(
@@ -489,13 +573,26 @@ class _OrderItem extends StatelessWidget {
             children: [
               Text(
                 total,
-                style: BaseTypography.titleSmall,
+                style: BaseTypography.titleSmall.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-              Gap.h4,
-              Text(
-                status,
-                style: BaseTypography.labelSmall.copyWith(
-                  color: statusColor,
+              Gap.h6,
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: BaseSize.s10,
+                  vertical: BaseSize.s4,
+                ),
+                decoration: BoxDecoration(
+                  color: statusColor.withValues(alpha: 0.09),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  status,
+                  style: BaseTypography.labelSmall.copyWith(
+                    color: statusColor,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
             ],

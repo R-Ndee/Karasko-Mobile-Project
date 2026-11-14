@@ -88,6 +88,12 @@ class _AdminProductListScreenState extends State<AdminProductListScreen> {
     }).toList();
   }
 
+  int _categoryCount(String category) {
+    if (category == 'Semua') return _products.length;
+
+    return _products.where((product) => product.category == category).length;
+  }
+
   void _showIntegrationMessage(String feature) {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
@@ -115,73 +121,43 @@ class _AdminProductListScreenState extends State<AdminProductListScreen> {
 
     return Scaffold(
       backgroundColor: BaseColor.cream,
-      appBar: AppBar(
-        backgroundColor: BaseColor.cream,
-        surfaceTintColor: BaseColor.transparent,
-        elevation: 0,
-        title: Text(
-          'Daftar Produk',
-          style: BaseTypography.titleLarge.copyWith(
-            color: BaseColor.charcoal,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-      ),
       body: SafeArea(
-        top: false,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: ListView(
-                padding: EdgeInsets.all(BaseSize.s20),
-                children: [
-                  Text(
-                    'Kelola Produk',
-                    style: BaseTypography.headlineSmall.copyWith(
-                      color: BaseColor.charcoal,
-                      fontWeight: FontWeight.w800,
+              child: CustomScrollView(
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                slivers: [
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(
+                      BaseSize.s20,
+                      BaseSize.s20,
+                      BaseSize.s20,
+                      BaseSize.s32,
+                    ),
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate([
+                        _buildHeader(),
+                        Gap.h24,
+                        _buildProductSummary(),
+                        Gap.h24,
+                        _buildSearchField(),
+                        Gap.h18,
+                        _buildCategoryFilter(),
+                        Gap.h24,
+                        _buildProductHeading(products.length),
+                        Gap.h14,
+                        if (products.isEmpty)
+                          _buildEmptyState()
+                        else
+                          ...products.map(_buildProductCard),
+                        Gap.h12,
+                        _buildAddButton(),
+                        Gap.h12,
+                      ]),
                     ),
                   ),
-                  Gap.h4,
-                  Text(
-                    'Pantau dan kelola produk Karasko.',
-                    style: BaseTypography.bodyMedium.copyWith(
-                      color: BaseColor.charcoal.withValues(alpha: 0.6),
-                    ),
-                  ),
-                  Gap.h20,
-                  _buildProductSummary(),
-                  Gap.h24,
-                  _buildSearchField(),
-                  Gap.h16,
-                  _buildCategoryFilter(),
-                  Gap.h24,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Semua Produk',
-                        style: BaseTypography.titleMedium.copyWith(
-                          color: BaseColor.charcoal,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      Text(
-                        '${products.length} produk',
-                        style: BaseTypography.bodySmall.copyWith(
-                          color: BaseColor.charcoal.withValues(alpha: 0.6),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Gap.h16,
-                  if (products.isEmpty)
-                    _buildEmptyState()
-                  else
-                    ...products.map(_buildProductCard),
-                  Gap.h16,
-                  _buildAddButton(),
                 ],
               ),
             ),
@@ -191,55 +167,143 @@ class _AdminProductListScreenState extends State<AdminProductListScreen> {
     );
   }
 
+  Widget _buildHeader() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Container(
+              width: 34,
+              height: 34,
+              decoration: BoxDecoration(
+                color: BaseColor.karasko,
+                borderRadius: BorderRadius.circular(11),
+              ),
+              child: const Icon(
+                Icons.coffee_rounded,
+                color: BaseColor.white,
+                size: 19,
+              ),
+            ),
+            Gap.w10,
+            Text(
+              'KARASKO ADMIN',
+              style: BaseTypography.labelSmall.copyWith(
+                color: BaseColor.caramel,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 1.4,
+              ),
+            ),
+          ],
+        ),
+        Gap.h20,
+        Text(
+          'Manajemen Produk',
+          style: BaseTypography.displaySmall.copyWith(
+            fontSize: 27,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        Gap.h6,
+        Text(
+          'Kelola katalog dan pantau ketersediaan produk.',
+          style: BaseTypography.bodySmall.copyWith(
+            color: Colors.grey.shade600,
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildProductSummary() {
+    final coffeeCount = _categoryCount('Coffee');
+    final nonCoffeeCount = _categoryCount('Non-Coffee');
+    final foodCount = _categoryCount('Food');
+
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(BaseSize.s20),
+      padding: const EdgeInsets.all(BaseSize.s20),
       decoration: BoxDecoration(
         color: BaseColor.karasko,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(22),
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Row(
+            children: [
+              Container(
+                width: 46,
+                height: 46,
+                decoration: BoxDecoration(
+                  color: BaseColor.white.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: const Icon(
+                  Icons.inventory_2_outlined,
+                  color: BaseColor.white,
+                  size: 23,
+                ),
+              ),
+              Gap.w14,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'TOTAL PRODUK',
+                      style: BaseTypography.labelSmall.copyWith(
+                        color: BaseColor.white.withValues(alpha: 0.7),
+                        letterSpacing: 1.1,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Gap.h4,
+                    Text(
+                      '${_products.length} Produk',
+                      style: BaseTypography.headlineMedium.copyWith(
+                        color: BaseColor.white,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Icon(
+                Icons.trending_up_rounded,
+                color: Color(0xFFD8C09E),
+                size: 26,
+              ),
+            ],
+          ),
+          Gap.h20,
           Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: BaseColor.white.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: const Icon(
-              Icons.inventory_2_outlined,
-              color: BaseColor.white,
-              size: 25,
-            ),
+            height: 1,
+            color: BaseColor.white.withValues(alpha: 0.15),
           ),
-          Gap.w16,
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Total Produk',
-                  style: BaseTypography.bodySmall.copyWith(
-                    color: BaseColor.white.withValues(alpha: 0.75),
-                  ),
+          Gap.h14,
+          Row(
+            children: [
+              Expanded(
+                child: _SummaryCategory(
+                  label: 'Coffee',
+                  count: coffeeCount,
                 ),
-                Gap.h4,
-                Text(
-                  '${_products.length} Produk',
-                  style: BaseTypography.titleLarge.copyWith(
-                    color: BaseColor.white,
-                    fontWeight: FontWeight.w800,
-                  ),
+              ),
+              Expanded(
+                child: _SummaryCategory(
+                  label: 'Non-Coffee',
+                  count: nonCoffeeCount,
                 ),
-              ],
-            ),
-          ),
-          const Icon(
-            Icons.trending_up_rounded,
-            color: Color(0xFFD8C09E),
-            size: 28,
+              ),
+              Expanded(
+                child: _SummaryCategory(
+                  label: 'Food',
+                  count: foodCount,
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -247,41 +311,45 @@ class _AdminProductListScreenState extends State<AdminProductListScreen> {
   }
 
   Widget _buildSearchField() {
-    return TextField(
-      controller: _searchController,
-      onChanged: (_) => setState(() {}),
-      style: BaseTypography.bodyMedium.copyWith(
-        color: BaseColor.charcoal,
+    return Container(
+      decoration: BoxDecoration(
+        color: BaseColor.white,
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(
+          color: BaseColor.charcoal.withValues(alpha: 0.08),
+        ),
       ),
-      decoration: InputDecoration(
-        hintText: 'Cari nama produk...',
-        hintStyle: BaseTypography.bodyMedium.copyWith(
-          color: BaseColor.charcoal.withValues(alpha: 0.4),
-        ),
-        prefixIcon: const Icon(
-          Icons.search_rounded,
-          color: BaseColor.karasko,
-        ),
-        filled: true,
-        fillColor: BaseColor.white,
-        contentPadding: EdgeInsets.symmetric(
-          vertical: BaseSize.s16,
-          horizontal: BaseSize.s16,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide.none,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(
-            color: Color(0xFFECEDE8),
+      child: TextField(
+        controller: _searchController,
+        onChanged: (_) => setState(() {}),
+        style: BaseTypography.bodyMedium,
+        decoration: InputDecoration(
+          hintText: 'Cari nama produk...',
+          hintStyle: BaseTypography.bodyMedium.copyWith(
+            color: Colors.grey.shade400,
           ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(
+          prefixIcon: const Icon(
+            Icons.search_rounded,
             color: BaseColor.karasko,
+            size: 22,
+          ),
+          suffixIcon: _searchController.text.isEmpty
+              ? null
+              : IconButton(
+                  onPressed: () {
+                    _searchController.clear();
+                    setState(() {});
+                  },
+                  icon: const Icon(
+                    Icons.close_rounded,
+                    size: 19,
+                    color: Colors.grey,
+                  ),
+                ),
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: BaseSize.s16,
+            vertical: BaseSize.s16,
           ),
         ),
       ),
@@ -294,11 +362,28 @@ class _AdminProductListScreenState extends State<AdminProductListScreen> {
       child: Row(
         children: _categories.map((category) {
           final isSelected = _selectedCategory == category;
+          final count = _categoryCount(category);
 
           return Padding(
-            padding: EdgeInsets.only(right: BaseSize.s8),
+            padding: const EdgeInsets.only(right: BaseSize.s8),
             child: ChoiceChip(
-              label: Text(category),
+              label: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(category),
+                  Gap.w6,
+                  Text(
+                    '$count',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                      color: isSelected
+                          ? BaseColor.white.withValues(alpha: 0.8)
+                          : BaseColor.charcoal.withValues(alpha: 0.55),
+                    ),
+                  ),
+                ],
+              ),
               selected: isSelected,
               onSelected: (_) {
                 setState(() {
@@ -315,10 +400,14 @@ class _AdminProductListScreenState extends State<AdminProductListScreen> {
               side: BorderSide(
                 color: isSelected
                     ? BaseColor.karasko
-                    : const Color(0xFFE6E8E2),
+                    : BaseColor.charcoal.withValues(alpha: 0.09),
               ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30),
+              ),
+              padding: const EdgeInsets.symmetric(
+                horizontal: BaseSize.s10,
+                vertical: BaseSize.s6,
               ),
             ),
           );
@@ -327,33 +416,67 @@ class _AdminProductListScreenState extends State<AdminProductListScreen> {
     );
   }
 
+  Widget _buildProductHeading(int count) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          _selectedCategory == 'Semua'
+              ? 'Semua Produk'
+              : _selectedCategory,
+          style: BaseTypography.headlineSmall.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: BaseSize.s10,
+            vertical: BaseSize.s6,
+          ),
+          decoration: BoxDecoration(
+            color: BaseColor.white,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Text(
+            '$count produk',
+            style: BaseTypography.labelSmall.copyWith(
+              color: BaseColor.charcoal.withValues(alpha: 0.65),
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildProductCard(_AdminProduct product) {
+    final stockColor = product.stock <= 10
+        ? const Color(0xFFB44B42)
+        : product.stock <= 15
+            ? const Color(0xFFB7791F)
+            : const Color(0xFF28734F);
+
     return Container(
-      margin: EdgeInsets.only(bottom: BaseSize.s12),
-      padding: EdgeInsets.all(BaseSize.s12),
+      margin: const EdgeInsets.only(bottom: BaseSize.s12),
+      padding: const EdgeInsets.all(BaseSize.s14),
       decoration: BoxDecoration(
         color: BaseColor.white,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: const Color(0xFFECEDE8),
+          color: BaseColor.charcoal.withValues(alpha: 0.07),
         ),
+        boxShadow: [
+          BoxShadow(
+            color: BaseColor.charcoal.withValues(alpha: 0.025),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         children: [
-          Container(
-            width: 68,
-            height: 68,
-            decoration: BoxDecoration(
-              color: const Color(0xFFECEFE8),
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Icon(
-              product.icon,
-              color: BaseColor.karasko,
-              size: 32,
-            ),
-          ),
-          Gap.w12,
+          _ProductIcon(product: product),
+          Gap.w14,
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -363,54 +486,76 @@ class _AdminProductListScreenState extends State<AdminProductListScreen> {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: BaseTypography.titleSmall.copyWith(
-                    color: BaseColor.charcoal,
                     fontWeight: FontWeight.w700,
+                    color: BaseColor.charcoal,
                   ),
                 ),
                 Gap.h4,
                 Text(
                   product.category,
                   style: BaseTypography.bodySmall.copyWith(
-                    color: BaseColor.charcoal.withValues(alpha: 0.55),
+                    color: Colors.grey.shade600,
                   ),
                 ),
                 Gap.h8,
                 Text(
                   _formatPrice(product.price),
-                  style: BaseTypography.titleSmall.copyWith(
+                  style: BaseTypography.titleMedium.copyWith(
                     color: BaseColor.caramel,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-                Gap.h4,
-                Text(
-                  'Stok: ${product.stock}',
-                  style: BaseTypography.bodySmall.copyWith(
-                    color: BaseColor.charcoal.withValues(alpha: 0.6),
-                  ),
+                Gap.h8,
+                Row(
+                  children: [
+                    Container(
+                      width: 7,
+                      height: 7,
+                      decoration: BoxDecoration(
+                        color: stockColor,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    Gap.w6,
+                    Text(
+                      'Stok ${product.stock}',
+                      style: BaseTypography.labelSmall.copyWith(
+                        color: stockColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Gap.w6,
+                    Text(
+                      product.stock <= 10
+                          ? '• Rendah'
+                          : product.stock <= 15
+                              ? '• Terbatas'
+                              : '• Tersedia',
+                      style: BaseTypography.labelSmall.copyWith(
+                        color: Colors.grey.shade500,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
+          Gap.w4,
           Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              IconButton(
+              _ProductActionButton(
+                icon: Icons.edit_outlined,
+                color: BaseColor.caramel,
                 tooltip: 'Edit produk',
                 onPressed: () => _showIntegrationMessage('Edit produk'),
-                icon: const Icon(
-                  Icons.edit_outlined,
-                  color: BaseColor.caramel,
-                  size: 21,
-                ),
               ),
-              IconButton(
+              Gap.h8,
+              _ProductActionButton(
+                icon: Icons.delete_outline_rounded,
+                color: const Color(0xFFB44B42),
                 tooltip: 'Hapus produk',
                 onPressed: () => _showIntegrationMessage('Hapus produk'),
-                icon: const Icon(
-                  Icons.delete_outline_rounded,
-                  color: Color(0xFFB44B42),
-                  size: 21,
-                ),
               ),
             ],
           ),
@@ -421,31 +566,46 @@ class _AdminProductListScreenState extends State<AdminProductListScreen> {
 
   Widget _buildEmptyState() {
     return Container(
-      padding: EdgeInsets.symmetric(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(
         vertical: BaseSize.s40,
         horizontal: BaseSize.s20,
       ),
+      decoration: BoxDecoration(
+        color: BaseColor.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: BaseColor.charcoal.withValues(alpha: 0.07),
+        ),
+      ),
       child: Column(
         children: [
-          const Icon(
-            Icons.inventory_2_outlined,
-            size: 48,
-            color: BaseColor.caramel,
+          Container(
+            width: 64,
+            height: 64,
+            decoration: const BoxDecoration(
+              color: BaseColor.cream,
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.inventory_2_outlined,
+              size: 30,
+              color: BaseColor.caramel,
+            ),
           ),
-          Gap.h12,
+          Gap.h14,
           Text(
             'Produk tidak ditemukan',
             style: BaseTypography.titleMedium.copyWith(
-              color: BaseColor.charcoal,
               fontWeight: FontWeight.w700,
             ),
           ),
-          Gap.h4,
+          Gap.h6,
           Text(
             'Coba gunakan kata kunci atau kategori lain.',
             textAlign: TextAlign.center,
             style: BaseTypography.bodySmall.copyWith(
-              color: BaseColor.charcoal.withValues(alpha: 0.6),
+              color: Colors.grey.shade600,
             ),
           ),
         ],
@@ -459,10 +619,11 @@ class _AdminProductListScreenState extends State<AdminProductListScreen> {
       height: 54,
       child: ElevatedButton.icon(
         onPressed: () => _showIntegrationMessage('Tambah produk'),
-        icon: const Icon(Icons.add_rounded),
+        icon: const Icon(Icons.add_rounded, size: 21),
         label: Text(
           'Tambah Produk',
           style: BaseTypography.labelLarge.copyWith(
+            color: BaseColor.white,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -470,8 +631,122 @@ class _AdminProductListScreenState extends State<AdminProductListScreen> {
           backgroundColor: BaseColor.karasko,
           foregroundColor: BaseColor.white,
           elevation: 0,
-          shape: const StadiumBorder(),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
         ),
+      ),
+    );
+  }
+}
+
+class _SummaryCategory extends StatelessWidget {
+  final String label;
+  final int count;
+
+  const _SummaryCategory({
+    required this.label,
+    required this.count,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '$count',
+          style: BaseTypography.titleLarge.copyWith(
+            color: BaseColor.white,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        Gap.h2,
+        Text(
+          label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: BaseTypography.labelSmall.copyWith(
+            color: BaseColor.white.withValues(alpha: 0.7),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ProductIcon extends StatelessWidget {
+  final _AdminProduct product;
+
+  const _ProductIcon({required this.product});
+
+  @override
+  Widget build(BuildContext context) {
+    final Color background;
+    final Color foreground;
+
+    switch (product.category) {
+      case 'Non-Coffee':
+        background = const Color(0xFFE9EFE5);
+        foreground = const Color(0xFF55734B);
+      case 'Food':
+        background = const Color(0xFFF5EBDD);
+        foreground = BaseColor.caramel;
+      default:
+        background = const Color(0xFFE8EEE9);
+        foreground = BaseColor.karasko;
+    }
+
+    return Container(
+      width: 66,
+      height: 66,
+      decoration: BoxDecoration(
+        color: background,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Icon(
+        product.icon,
+        color: foreground,
+        size: 30,
+      ),
+    );
+  }
+}
+
+class _ProductActionButton extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final String tooltip;
+  final VoidCallback onPressed;
+
+  const _ProductActionButton({
+    required this.icon,
+    required this.color,
+    required this.tooltip,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      tooltip: tooltip,
+      onPressed: onPressed,
+      constraints: const BoxConstraints(
+        minWidth: 36,
+        minHeight: 36,
+      ),
+      padding: EdgeInsets.zero,
+      visualDensity: VisualDensity.compact,
+      style: IconButton.styleFrom(
+        backgroundColor: color.withValues(alpha: 0.08),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(11),
+        ),
+      ),
+      icon: Icon(
+        icon,
+        color: color,
+        size: 19,
       ),
     );
   }
