@@ -1,9 +1,12 @@
-﻿
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import '../../../../core/constants/themes/color_constants.dart';
 import '../../../../core/constants/themes/size_constants.dart';
 import '../../../../core/constants/themes/typography_constants.dart';
+import '../models/admin_product.dart';
+import '../widgets/delete_product_dialog.dart';
+import 'add_product_screen.dart';
+import 'edit_product_screen.dart';
 
 class AdminProductListScreen extends StatefulWidget {
   const AdminProductListScreen({super.key});
@@ -25,43 +28,43 @@ class _AdminProductListScreenState extends State<AdminProductListScreen> {
     'Food',
   ];
 
-  final List<_AdminProduct> _products = [
-    _AdminProduct(
+  final List<AdminProduct> _products = [
+    const AdminProduct(
       name: 'Karasko Signature',
       category: 'Coffee',
       price: 25000,
       stock: 24,
       icon: Icons.coffee_rounded,
     ),
-    _AdminProduct(
+    const AdminProduct(
       name: 'Caramel Latte',
       category: 'Coffee',
       price: 30000,
       stock: 18,
       icon: Icons.local_cafe_rounded,
     ),
-    _AdminProduct(
+    const AdminProduct(
       name: 'Classic Americano',
       category: 'Coffee',
       price: 22000,
       stock: 32,
       icon: Icons.coffee_maker_rounded,
     ),
-    _AdminProduct(
+    const AdminProduct(
       name: 'Matcha Latte',
       category: 'Non-Coffee',
       price: 28000,
       stock: 15,
       icon: Icons.local_drink_rounded,
     ),
-    _AdminProduct(
+    const AdminProduct(
       name: 'Chocolate Frappe',
       category: 'Non-Coffee',
       price: 32000,
       stock: 12,
       icon: Icons.icecream_rounded,
     ),
-    _AdminProduct(
+    const AdminProduct(
       name: 'Butter Croissant',
       category: 'Food',
       price: 18000,
@@ -76,7 +79,7 @@ class _AdminProductListScreenState extends State<AdminProductListScreen> {
     super.dispose();
   }
 
-  List<_AdminProduct> get _filteredProducts {
+  List<AdminProduct> get _filteredProducts {
     final keyword = _searchController.text.toLowerCase().trim();
 
     return _products.where((product) {
@@ -99,10 +102,57 @@ class _AdminProductListScreenState extends State<AdminProductListScreen> {
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
-          content: Text('$feature akan dihubungkan oleh Orang 2.'),
+          content: Text(message),
           behavior: SnackBarBehavior.floating,
+          backgroundColor: BaseColor.karasko,
         ),
       );
+  }
+
+  Future<void> _openAddProduct() async {
+    final newProduct = await Navigator.push<AdminProduct>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const AddProductScreen(),
+      ),
+    );
+
+    if (newProduct != null && mounted) {
+      setState(() {
+        _products.insert(0, newProduct);
+      });
+      _showFeedback('${newProduct.name} berhasil ditambahkan');
+    }
+  }
+
+  Future<void> _openEditProduct(AdminProduct product) async {
+    final updatedProduct = await Navigator.push<AdminProduct>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => EditProductScreen(product: product),
+      ),
+    );
+
+    if (updatedProduct != null && mounted) {
+      setState(() {
+        final index = _products.indexOf(product);
+        if (index != -1) {
+          _products[index] = updatedProduct;
+        }
+      });
+      _showFeedback('${updatedProduct.name} berhasil diperbarui');
+    }
+  }
+
+  Future<void> _confirmDeleteProduct(AdminProduct product) async {
+    final isConfirmed = await DeleteProductDialog.show(context, product);
+
+    if (isConfirmed == true && mounted) {
+      setState(() {
+        _products.remove(product);
+      });
+      _showFeedback('${product.name} telah dihapus');
+    }
   }
 
   String _formatPrice(int price) {

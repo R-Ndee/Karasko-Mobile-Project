@@ -30,8 +30,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
   static const Color charcoal = Color(0xFF292B28);
   static const Color caramel = Color(0xFF845326);
 
-  bool _isProcessing = true;
-
   @override
   void initState() {
     super.initState();
