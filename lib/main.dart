@@ -4,6 +4,10 @@ import 'features/splash/screens/splash_screen.dart';
 import 'package:provider/provider.dart';
 import 'providers/cart_provider.dart';
 import 'providers/order_provider.dart';
+import 'features/customer/cart/screens/cart_screen.dart';
+import 'features/customer/orders/screens/active_order_screen.dart';
+import 'features/customer/payment/screens/payment_screen.dart';
+import 'features/admin/dashboard/screens/admin_dashboard_screen.dart';
 
 void main() {
   runApp(
@@ -39,7 +43,7 @@ class MainApp extends StatelessWidget {
           surface: const Color(0xFFF9F9F7),
         ),
       ),
-      home: SplashScreen(),
+      home: const SplashScreen(),
     );
   }
 }

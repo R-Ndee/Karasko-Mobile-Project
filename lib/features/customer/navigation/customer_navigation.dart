@@ -1,6 +1,9 @@
 ﻿import 'package:flutter/material.dart';
 import '../home/screens/home_screen.dart';
 import '../profile/screens/profile_screen.dart';
+import '../menu/screens/menu_screen.dart';
+import '../cart/screens/cart_screen.dart';
+import '../orders/screens/active_order_screen.dart';
 
 class CustomerNavigation extends StatefulWidget {
   const CustomerNavigation({super.key});
@@ -14,9 +17,9 @@ class _CustomerNavigationState extends State<CustomerNavigation> {
 
   final List<Widget> _pages = [
     const HomeScreen(), 
-    const Center(child: Text('Halaman Menu')),
-    const Center(child: Text('Halaman Keranjang')),
-    const Center(child: Text('Halaman Pesanan Aktif')),
+    const MenuScreen(),
+    const CartScreen(),
+    const ActiveOrderScreen(),
     const ProfileScreen(),
   ];
 
