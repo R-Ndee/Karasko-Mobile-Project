@@ -1,9 +1,13 @@
+﻿
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../models/cart_item.dart';
+import '../../../../models/order_model.dart';
 import '../../../../providers/cart_provider.dart';
+import '../../../../providers/order_provider.dart';
 import 'payment_success_screen.dart';
 
 class PaymentScreen extends StatefulWidget {
@@ -31,6 +35,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
   static const Color caramel = Color(0xFF845326);
 
   bool _isProcessing = true;
+  bool _hasError = false;
+
+  String? _orderId;
 
   @override
   void initState() {
@@ -43,9 +50,35 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
     if (!mounted) return;
 
-    context.read<CartProvider>().clearCart();
+    final cart = context.read<CartProvider>();
+    final items = List<CartItem>.from(cart.items);
+
+    if (items.isEmpty) {
+      setState(() {
+        _isProcessing = false;
+        _hasError = true;
+      });
+      return;
+    }
+
+    final order = OrderModel(
+      id: 'KRS-${DateTime.now().millisecondsSinceEpoch}',
+      items: items,
+      totalPrice: cart.totalPrice,
+      paymentMethod: widget.paymentMethod,
+      status: 'Diterima',
+      createdAt: DateTime.now(),
+      orderType: widget.orderType,
+      useEcoPackaging: widget.useEcoPackaging,
+      orderNote: widget.orderNote,
+    );
+
+    context.read<OrderProvider>().addOrder(order);
+
+    cart.clearCart();
 
     setState(() {
+      _orderId = order.id;
       _isProcessing = false;
     });
   }
@@ -61,7 +94,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
         automaticallyImplyLeading: false,
         title: const Text(
           'Pembayaran',
-          style: TextStyle(fontWeight: FontWeight.bold, color: forestGreen),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: forestGreen,
+          ),
         ),
       ),
       body: SafeArea(
@@ -72,7 +108,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
               duration: const Duration(milliseconds: 400),
               child: _isProcessing
                   ? _buildProcessingState()
-                  : _buildCompletedState(),
+                  : _hasError
+                      ? _buildErrorState()
+                      : _buildCompletedState(),
             ),
           ),
         ),
@@ -118,7 +156,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
           'Mohon tunggu sebentar. Kami sedang memproses '
           'simulasi pembayaran pesanan kamu.',
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 13, height: 1.6, color: Colors.black54),
+          style: TextStyle(
+            fontSize: 13,
+            height: 1.6,
+            color: Colors.black54,
+          ),
         ),
         const SizedBox(height: 24),
         _buildPaymentInformation(),
@@ -159,11 +201,50 @@ class _PaymentScreenState extends State<PaymentScreen> {
           'Simulasi pembayaran berhasil diselesaikan. '
           'Terima kasih telah memesan di Karasko.',
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 13, height: 1.6, color: Colors.black54),
+          style: TextStyle(
+            fontSize: 13,
+            height: 1.6,
+            color: Colors.black54,
+          ),
         ),
         const SizedBox(height: 24),
         _buildPaymentInformation(),
         const SizedBox(height: 28),
+        if (_orderId != null)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: forestGreen.withValues(alpha: 0.12),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Nomor Pesanan',
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.black54,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  _orderId!,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: forestGreen,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        const SizedBox(height: 20),
         Container(
           width: double.infinity,
           padding: const EdgeInsets.all(13),
@@ -174,13 +255,21 @@ class _PaymentScreenState extends State<PaymentScreen> {
           child: const Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.info_outline, size: 18, color: caramel),
+              Icon(
+                Icons.info_outline,
+                size: 18,
+                color: caramel,
+              ),
               SizedBox(width: 10),
               Expanded(
                 child: Text(
                   'Ini hanya simulasi untuk demonstrasi aplikasi. '
                   'Tidak ada transaksi atau pemotongan uang sungguhan.',
-                  style: TextStyle(fontSize: 11, height: 1.5, color: charcoal),
+                  style: TextStyle(
+                    fontSize: 11,
+                    height: 1.5,
+                    color: charcoal,
+                  ),
                 ),
               ),
             ],
@@ -202,7 +291,76 @@ class _PaymentScreenState extends State<PaymentScreen> {
             ),
             child: const Text(
               'Kembali ke Beranda',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildErrorState() {
+    return Column(
+      key: const ValueKey('error'),
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          width: 108,
+          height: 108,
+          decoration: BoxDecoration(
+            color: Colors.red.withValues(alpha: 0.08),
+            shape: BoxShape.circle,
+          ),
+          child: const Icon(
+            Icons.error_outline_rounded,
+            size: 62,
+            color: Colors.redAccent,
+          ),
+        ),
+        const SizedBox(height: 28),
+        const Text(
+          'Pesanan Tidak Ditemukan',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 21,
+            fontWeight: FontWeight.bold,
+            color: forestGreen,
+          ),
+        ),
+        const SizedBox(height: 10),
+        const Text(
+          'Keranjang kamu kosong. Tidak ada pesanan '
+          'yang dapat diproses.',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 13,
+            height: 1.6,
+            color: Colors.black54,
+          ),
+        ),
+        const SizedBox(height: 28),
+        SizedBox(
+          width: double.infinity,
+          height: 52,
+          child: ElevatedButton(
+            onPressed: () => Navigator.pop(context),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: forestGreen,
+              foregroundColor: Colors.white,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            child: const Text(
+              'Kembali',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
         ),
@@ -253,7 +411,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
         Expanded(
           child: Text(
             title,
-            style: const TextStyle(fontSize: 12, color: Colors.black54),
+            style: const TextStyle(
+              fontSize: 12,
+              color: Colors.black54,
+            ),
           ),
         ),
         const SizedBox(width: 12),

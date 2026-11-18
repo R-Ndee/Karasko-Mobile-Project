@@ -1,4 +1,5 @@
-﻿import 'package:flutter/foundation.dart';
+﻿
+import 'package:flutter/foundation.dart';
 
 import '../models/cart_item.dart';
 import '../models/product.dart';
@@ -18,26 +19,56 @@ class CartProvider extends ChangeNotifier {
 
   bool get isEmpty => _items.isEmpty;
 
-  void addItem(Product product) {
+  void addItem(
+    Product product, {
+    String size = 'Medium',
+    int sizeVolumeMl = 350,
+    int sizeExtraPrice = 0,
+    String temperature = 'Iced',
+    String sugarLevel = 'Less Sugar',
+    String iceLevel = 'Normal Ice',
+    int quantity = 1,
+  }) {
+    if (quantity < 1) return;
+
+    final newItem = CartItem(
+      product: product,
+      size: size,
+      sizeVolumeMl: sizeVolumeMl,
+      sizeExtraPrice: sizeExtraPrice,
+      temperature: temperature,
+      sugarLevel: sugarLevel,
+      iceLevel: iceLevel,
+      quantity: quantity,
+    );
+
     final index = _items.indexWhere(
-      (item) => item.product.id == product.id,
+      (item) => item.cartItemId == newItem.cartItemId,
     );
 
     if (index >= 0) {
-      _items[index].quantity++;
+      _items[index].quantity += quantity;
     } else {
-      _items.add(
-        CartItem(product: product),
-      );
+      _items.add(newItem);
     }
 
     notifyListeners();
   }
 
-  void increaseQuantity(String productId) {
-    final index = _items.indexWhere(
-      (item) => item.product.id == productId,
+  int _findItemIndex(String itemId) {
+    final exactIndex = _items.indexWhere(
+      (item) => item.cartItemId == itemId,
     );
+
+    if (exactIndex >= 0) return exactIndex;
+
+    return _items.indexWhere(
+      (item) => item.product.id == itemId,
+    );
+  }
+
+  void increaseQuantity(String productId) {
+    final index = _findItemIndex(productId);
 
     if (index < 0) return;
 
@@ -46,9 +77,7 @@ class CartProvider extends ChangeNotifier {
   }
 
   void decreaseQuantity(String productId) {
-    final index = _items.indexWhere(
-      (item) => item.product.id == productId,
-    );
+    final index = _findItemIndex(productId);
 
     if (index < 0) return;
 
@@ -62,9 +91,17 @@ class CartProvider extends ChangeNotifier {
   }
 
   void removeItem(String productId) {
-    _items.removeWhere(
-      (item) => item.product.id == productId,
+    final exactIndex = _items.indexWhere(
+      (item) => item.cartItemId == productId,
     );
+
+    if (exactIndex >= 0) {
+      _items.removeAt(exactIndex);
+    } else {
+      _items.removeWhere(
+        (item) => item.product.id == productId,
+      );
+    }
 
     notifyListeners();
   }

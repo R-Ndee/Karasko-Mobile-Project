@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+﻿
+import 'package:flutter/material.dart';
 import 'package:karasko_mobile_project/features/admin/orders/models/admin_order_data.dart';
 
 const _forest = Color(0xFF032217);
@@ -6,6 +7,8 @@ const _mint = Color(0xFFC8EAD7);
 const _paper = Color(0xFFF8F8F5);
 const _muted = Color(0xFF747C77);
 const _copper = Color(0xFF9A6034);
+const _outline = Color(0xFFE8E8E6);
+const _danger = Color(0xFFB34B43);
 
 class AdminOrderDetailScreen extends StatefulWidget {
   const AdminOrderDetailScreen({
@@ -18,35 +21,48 @@ class AdminOrderDetailScreen extends StatefulWidget {
   final ValueChanged<AdminOrderData> onStatusChanged;
 
   @override
-  State<AdminOrderDetailScreen> createState() => _AdminOrderDetailScreenState();
+  State<AdminOrderDetailScreen> createState() =>
+      _AdminOrderDetailScreenState();
 }
 
-class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
+class _AdminOrderDetailScreenState
+    extends State<AdminOrderDetailScreen> {
   late AdminOrderStatus _status = widget.order.status;
 
   AdminOrderStatus? get _nextStatus => switch (_status) {
-    AdminOrderStatus.newOrder => AdminOrderStatus.preparing,
-    AdminOrderStatus.preparing => AdminOrderStatus.ready,
-    AdminOrderStatus.ready => AdminOrderStatus.completed,
-    AdminOrderStatus.completed || AdminOrderStatus.cancelled => null,
-  };
+        AdminOrderStatus.newOrder => AdminOrderStatus.preparing,
+        AdminOrderStatus.preparing => AdminOrderStatus.ready,
+        AdminOrderStatus.ready => AdminOrderStatus.completed,
+        AdminOrderStatus.completed ||
+        AdminOrderStatus.cancelled => null,
+      };
 
   String get _nextActionLabel => switch (_status) {
-    AdminOrderStatus.newOrder => 'Mulai Diproses',
-    AdminOrderStatus.preparing => 'Tandai Siap Diambil',
-    AdminOrderStatus.ready => 'Selesaikan Pesanan',
-    AdminOrderStatus.completed ||
-    AdminOrderStatus.cancelled => 'Pesanan Ditutup',
-  };
+        AdminOrderStatus.newOrder => 'Mulai Diproses',
+        AdminOrderStatus.preparing => 'Tandai Siap Diambil',
+        AdminOrderStatus.ready => 'Selesaikan Pesanan',
+        AdminOrderStatus.completed ||
+        AdminOrderStatus.cancelled => 'Pesanan Ditutup',
+      };
 
   void _changeStatus(AdminOrderStatus status) {
-    setState(() => _status = status);
-    widget.onStatusChanged(widget.order.copyWith(status: status));
+    if (_status == status || !mounted) return;
+
+    setState(() {
+      _status = status;
+    });
+
+    widget.onStatusChanged(
+      widget.order.copyWith(status: status),
+    );
+
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
-          content: Text('Status pesanan ${_statusLabel(status).toLowerCase()}'),
+          content: Text(
+            'Status pesanan ${_statusLabel(status).toLowerCase()}',
+          ),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -55,24 +71,32 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
   Future<void> _confirmCancel() async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: const Text('Batalkan pesanan?'),
-        content: Text('Pesanan #${widget.order.id} akan ditandai dibatalkan.'),
+        content: Text(
+          'Pesanan #${widget.order.id} akan ditandai sebagai dibatalkan.',
+        ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context, false),
+            onPressed: () {
+              Navigator.pop(dialogContext, false);
+            },
             child: const Text('Kembali'),
           ),
           FilledButton(
-            onPressed: () => Navigator.pop(context, true),
+            onPressed: () {
+              Navigator.pop(dialogContext, true);
+            },
             style: FilledButton.styleFrom(
-              backgroundColor: const Color(0xFFB34B43),
+              backgroundColor: _danger,
+              foregroundColor: Colors.white,
             ),
             child: const Text('Batalkan'),
           ),
         ],
       ),
     );
+
     if (confirmed == true && mounted) {
       _changeStatus(AdminOrderStatus.cancelled);
     }
@@ -120,11 +144,15 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
                     const SizedBox(height: 4),
                     Text(
                       '${order.timeLabel} · ${order.customerName}',
-                      style: const TextStyle(color: _muted, fontSize: 11),
+                      style: const TextStyle(
+                        color: _muted,
+                        fontSize: 11,
+                      ),
                     ),
                   ],
                 ),
               ),
+              const SizedBox(width: 8),
               _OrderStatusBadge(status: _status),
             ],
           ),
@@ -136,18 +164,39 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
             trailing: '${order.items.length} menu',
             child: Column(
               children: [
-                for (var index = 0; index < order.items.length; index++) ...[
-                  if (index > 0) const Divider(height: 18, color: _paper),
-                  _OrderLineTile(item: order.items[index]),
-                ],
+                if (order.items.isEmpty)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 12),
+                    child: Text(
+                      'Tidak ada rincian produk.',
+                      style: TextStyle(
+                        color: _muted,
+                        fontSize: 11,
+                      ),
+                    ),
+                  )
+                else
+                  for (var index = 0;
+                      index < order.items.length;
+                      index++) ...[
+                    if (index > 0)
+                      const Divider(height: 18, color: _paper),
+                    _OrderLineTile(item: order.items[index]),
+                  ],
                 const Divider(height: 20, color: _paper),
-                _PriceRow(label: 'Subtotal', amount: order.total),
-                const SizedBox(height: 8),
-                const _PriceRow(label: 'Biaya layanan', amount: 0),
+                _PriceRow(
+                  label: 'Subtotal',
+                  amount: order.itemSubtotal,
+                ),
+                const SizedBox(height: 9),
+                _PriceRow(
+                  label: 'Penyesuaian',
+                  amount: order.adjustment,
+                ),
                 const Divider(height: 20, color: _paper),
                 _PriceRow(
                   label: 'Total Pembayaran',
-                  amount: order.total,
+                  amount: order.totalPrice,
                   emphasized: true,
                 ),
               ],
@@ -159,18 +208,19 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
             child: Column(
               children: [
                 _InfoRow(
-                  icon: Icons.person_outline,
+                  icon: Icons.person_outline_rounded,
                   label: 'Nama pelanggan',
                   value: order.customerName,
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 14),
                 _InfoRow(
                   icon: Icons.payments_outlined,
                   label: 'Pembayaran',
                   value: order.paymentMethod,
                 ),
-                if (order.note != null) ...[
-                  const SizedBox(height: 12),
+                if (order.note != null &&
+                    order.note!.trim().isNotEmpty) ...[
+                  const SizedBox(height: 14),
                   _InfoRow(
                     icon: Icons.sticky_note_2_outlined,
                     label: 'Catatan',
@@ -209,13 +259,15 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
                     _status == AdminOrderStatus.newOrder
                         ? Icons.play_arrow_rounded
                         : _status == AdminOrderStatus.ready
-                        ? Icons.check_circle_outline
-                        : Icons.arrow_forward_rounded,
+                            ? Icons.check_circle_outline_rounded
+                            : Icons.arrow_forward_rounded,
                     size: 19,
                   ),
                   label: Text(
                     _nextActionLabel,
-                    style: const TextStyle(fontWeight: FontWeight.w700),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
               ),
@@ -223,10 +275,10 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
                   _status == AdminOrderStatus.preparing)
                 TextButton.icon(
                   onPressed: _confirmCancel,
-                  icon: const Icon(Icons.close, size: 16),
+                  icon: const Icon(Icons.close_rounded, size: 16),
                   label: const Text('Batalkan Pesanan'),
                   style: TextButton.styleFrom(
-                    foregroundColor: const Color(0xFFB34B43),
+                    foregroundColor: _danger,
                   ),
                 ),
             ],
@@ -238,12 +290,12 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
 }
 
 String _statusLabel(AdminOrderStatus status) => switch (status) {
-  AdminOrderStatus.newOrder => 'Baru',
-  AdminOrderStatus.preparing => 'Diproses',
-  AdminOrderStatus.ready => 'Siap diambil',
-  AdminOrderStatus.completed => 'Selesai',
-  AdminOrderStatus.cancelled => 'Dibatalkan',
-};
+      AdminOrderStatus.newOrder => 'Baru',
+      AdminOrderStatus.preparing => 'Diproses',
+      AdminOrderStatus.ready => 'Siap diambil',
+      AdminOrderStatus.completed => 'Selesai',
+      AdminOrderStatus.cancelled => 'Dibatalkan',
+    };
 
 class _OrderStatusBadge extends StatelessWidget {
   const _OrderStatusBadge({required this.status});
@@ -257,12 +309,16 @@ class _OrderStatusBadge extends StatelessWidget {
       AdminOrderStatus.preparing => const Color(0xFF386C9B),
       AdminOrderStatus.ready => const Color(0xFF36765D),
       AdminOrderStatus.completed => _forest,
-      AdminOrderStatus.cancelled => const Color(0xFFB34B43),
+      AdminOrderStatus.cancelled => _danger,
     };
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 10,
+        vertical: 6,
+      ),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: color.withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Text(
@@ -284,7 +340,13 @@ class _OrderProgress extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const steps = ['Pesanan masuk', 'Sedang dibuat', 'Siap diambil', 'Selesai'];
+    const steps = [
+      'Pesanan masuk',
+      'Sedang dibuat',
+      'Siap diambil',
+      'Selesai',
+    ];
+
     final activeStep = switch (status) {
       AdminOrderStatus.newOrder => 0,
       AdminOrderStatus.preparing => 1,
@@ -297,17 +359,22 @@ class _OrderProgress extends StatelessWidget {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: _outline),
       ),
       child: status == AdminOrderStatus.cancelled
           ? const Row(
               children: [
-                Icon(Icons.cancel_outlined, color: Color(0xFFB34B43), size: 19),
+                Icon(
+                  Icons.cancel_outlined,
+                  color: _danger,
+                  size: 19,
+                ),
                 SizedBox(width: 8),
                 Text(
                   'Pesanan dibatalkan',
                   style: TextStyle(
-                    color: Color(0xFFB34B43),
+                    color: _danger,
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
                   ),
@@ -325,13 +392,19 @@ class _OrderProgress extends StatelessWidget {
                           height: 23,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
-                            color: index <= activeStep ? _forest : _paper,
+                            color: index <= activeStep
+                                ? _forest
+                                : _paper,
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
-                            index < activeStep ? Icons.check : Icons.circle,
+                            index < activeStep
+                                ? Icons.check_rounded
+                                : Icons.circle,
                             size: index < activeStep ? 14 : 8,
-                            color: index <= activeStep ? _mint : _muted,
+                            color: index <= activeStep
+                                ? _mint
+                                : _muted,
                           ),
                         ),
                         const SizedBox(height: 6),
@@ -340,7 +413,9 @@ class _OrderProgress extends StatelessWidget {
                           textAlign: TextAlign.center,
                           maxLines: 2,
                           style: TextStyle(
-                            color: index <= activeStep ? _forest : _muted,
+                            color: index <= activeStep
+                                ? _forest
+                                : _muted,
                             fontSize: 8,
                             fontWeight: index == activeStep
                                 ? FontWeight.w700
@@ -383,7 +458,8 @@ class _DetailSection extends StatelessWidget {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: _outline),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -403,7 +479,10 @@ class _DetailSection extends StatelessWidget {
               if (trailing != null)
                 Text(
                   trailing!,
-                  style: const TextStyle(color: _muted, fontSize: 10),
+                  style: const TextStyle(
+                    color: _muted,
+                    fontSize: 10,
+                  ),
                 ),
             ],
           ),
@@ -455,7 +534,11 @@ class _OrderLineTile extends StatelessWidget {
               const SizedBox(height: 3),
               Text(
                 item.customization,
-                style: const TextStyle(color: _muted, fontSize: 9, height: 1.3),
+                style: const TextStyle(
+                  color: _muted,
+                  fontSize: 9,
+                  height: 1.3,
+                ),
               ),
             ],
           ),
@@ -490,13 +573,19 @@ class _PriceRow extends StatelessWidget {
     final style = TextStyle(
       color: emphasized ? _forest : _muted,
       fontSize: emphasized ? 12 : 10,
-      fontWeight: emphasized ? FontWeight.w800 : FontWeight.w400,
+      fontWeight: emphasized
+          ? FontWeight.w800
+          : FontWeight.w400,
     );
+
     return Row(
       children: [
         Text(label, style: style),
         const Spacer(),
-        Text('Rp ${formatAdminCurrency(amount)}', style: style),
+        Text(
+          'Rp ${formatAdminCurrency(amount)}',
+          style: style,
+        ),
       ],
     );
   }
@@ -524,8 +613,14 @@ class _InfoRow extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(label, style: const TextStyle(color: _muted, fontSize: 9)),
-              const SizedBox(height: 2),
+              Text(
+                label,
+                style: const TextStyle(
+                  color: _muted,
+                  fontSize: 9,
+                ),
+              ),
+              const SizedBox(height: 3),
               Text(
                 value,
                 style: const TextStyle(

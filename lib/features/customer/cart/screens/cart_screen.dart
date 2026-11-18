@@ -1,3 +1,4 @@
+﻿
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -36,6 +37,7 @@ class _CartScreenState extends State<CartScreen> {
 
     for (int i = 0; i < digits.length; i++) {
       buffer.write(digits[i]);
+
       final remaining = digits.length - i - 1;
 
       if (remaining > 0 && remaining % 3 == 0) {
@@ -90,13 +92,13 @@ class _CartScreenState extends State<CartScreen> {
                         child: CartItemCard(
                           item: item,
                           onIncrease: () {
-                            cart.increaseQuantity(item.product.id);
+                            cart.increaseQuantity(item.cartItemId);
                           },
                           onDecrease: () {
-                            cart.decreaseQuantity(item.product.id);
+                            cart.decreaseQuantity(item.cartItemId);
                           },
                           onRemove: () {
-                            cart.removeItem(item.product.id);
+                            cart.removeItem(item.cartItemId);
                           },
                         ),
                       ),
@@ -110,7 +112,10 @@ class _CartScreenState extends State<CartScreen> {
                   ],
                 ),
               ),
-              _buildBottomSummary(cart.totalItems, cart.totalPrice),
+              _buildBottomSummary(
+                cart.totalItems,
+                cart.totalPrice,
+              ),
             ],
           );
         },
@@ -151,7 +156,10 @@ class _CartScreenState extends State<CartScreen> {
             const Text(
               'Yuk, pilih kopi favoritmu dan tambahkan ke keranjang.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14, color: Colors.black54),
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.black54,
+              ),
             ),
           ],
         ),
@@ -175,7 +183,11 @@ class _CartScreenState extends State<CartScreen> {
               color: Colors.white.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(Icons.coffee, color: Colors.white, size: 24),
+            child: const Icon(
+              Icons.coffee,
+              color: Colors.white,
+              size: 24,
+            ),
           ),
           const SizedBox(width: 12),
           const Expanded(
@@ -203,7 +215,10 @@ class _CartScreenState extends State<CartScreen> {
               ],
             ),
           ),
-          const Icon(Icons.local_cafe_outlined, color: Colors.white70),
+          const Icon(
+            Icons.local_cafe_outlined,
+            color: Colors.white70,
+          ),
         ],
       ),
     );
@@ -254,7 +269,11 @@ class _CartScreenState extends State<CartScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, size: 18, color: isSelected ? Colors.white : charcoal),
+              Icon(
+                icon,
+                size: 18,
+                color: isSelected ? Colors.white : charcoal,
+              ),
               const SizedBox(width: 8),
               Text(
                 label,
@@ -314,7 +333,10 @@ class _CartScreenState extends State<CartScreen> {
           maxLength: 150,
           decoration: InputDecoration(
             hintText: 'Contoh: Kurangi gula, tanpa sedotan...',
-            hintStyle: const TextStyle(fontSize: 13, color: Colors.black38),
+            hintStyle: const TextStyle(
+              fontSize: 13,
+              color: Colors.black38,
+            ),
             filled: true,
             fillColor: Colors.white,
             counterStyle: const TextStyle(fontSize: 10),
@@ -345,7 +367,11 @@ class _CartScreenState extends State<CartScreen> {
               color: const Color(0xFFEAF1E9),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(Icons.eco_outlined, color: forestGreen, size: 23),
+            child: const Icon(
+              Icons.eco_outlined,
+              color: forestGreen,
+              size: 23,
+            ),
           ),
           const SizedBox(width: 12),
           const Expanded(
@@ -363,7 +389,10 @@ class _CartScreenState extends State<CartScreen> {
                 SizedBox(height: 4),
                 Text(
                   'Dukung penggunaan kemasan ramah lingkungan.',
-                  style: TextStyle(fontSize: 11, color: Colors.black54),
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.black54,
+                  ),
                 ),
               ],
             ),
@@ -386,7 +415,11 @@ class _CartScreenState extends State<CartScreen> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Icon(Icons.verified_user_outlined, color: caramel, size: 20),
+        const Icon(
+          Icons.verified_user_outlined,
+          color: caramel,
+          size: 20,
+        ),
         const SizedBox(width: 10),
         Expanded(
           child: Text(
@@ -408,7 +441,9 @@ class _CartScreenState extends State<CartScreen> {
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(22),
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -427,7 +462,10 @@ class _CartScreenState extends State<CartScreen> {
               children: [
                 const Text(
                   'Total Item',
-                  style: TextStyle(fontSize: 13, color: Colors.black54),
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.black54,
+                  ),
                 ),
                 Text(
                   '$totalItems item',
@@ -445,7 +483,10 @@ class _CartScreenState extends State<CartScreen> {
               children: [
                 const Text(
                   'Subtotal',
-                  style: TextStyle(fontSize: 14, color: Colors.black54),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.black54,
+                  ),
                 ),
                 Text(
                   formatRupiah(totalPrice),
