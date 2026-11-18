@@ -1,11 +1,11 @@
-﻿
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
+import 'package:karasko_mobile_project/features/admin/dashboard/screens/admin_dashboard_screen.dart';
+import 'package:karasko_mobile_project/features/customer/home/screens/home_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/constants/themes/color_constants.dart';
 import '../../../models/product.dart';
 import '../../../providers/cart_provider.dart';
-import '../../customer/cart/screens/cart_screen.dart';
 import '../widgets/auth_text_field.dart';
 import 'register_screen.dart';
 
@@ -57,9 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(
-          builder: (_) => const CartScreen(),
-        ),
+        MaterialPageRoute(builder: (_) => const AdminDashboardScreen()),
         (route) => false,
       );
     });
@@ -89,11 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           const SizedBox(height: 9),
-          Container(
-            width: 38,
-            height: 2,
-            color: const Color(0xFFC49A6C),
-          ),
+          Container(width: 38, height: 2, color: const Color(0xFFC49A6C)),
           const SizedBox(height: 32),
           const Text(
             'COFFEE & DAILY MOMENTS',
@@ -169,9 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 return 'Email wajib diisi.';
               }
 
-              if (!RegExp(
-                r'^[^@\s]+@[^@\s]+\.[^@\s]+$',
-              ).hasMatch(email)) {
+              if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email)) {
                 return 'Masukkan alamat email yang valid.';
               }
 
@@ -209,8 +201,9 @@ class _LoginScreenState extends State<LoginScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: BaseColor.karasko,
                 foregroundColor: Colors.white,
-                disabledBackgroundColor:
-                    BaseColor.karasko.withValues(alpha: 0.7),
+                disabledBackgroundColor: BaseColor.karasko.withValues(
+                  alpha: 0.7,
+                ),
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(14),
@@ -236,10 +229,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         SizedBox(width: 10),
-                        Icon(
-                          Icons.arrow_forward_rounded,
-                          size: 19,
-                        ),
+                        Icon(Icons.arrow_forward_rounded, size: 19),
                       ],
                     ),
             ),
@@ -256,19 +246,14 @@ class _LoginScreenState extends State<LoginScreen> {
         const Flexible(
           child: Text(
             'Belum memiliki akun?',
-            style: TextStyle(
-              color: Color(0xFF777C75),
-              fontSize: 12,
-            ),
+            style: TextStyle(color: Color(0xFF777C75), fontSize: 12),
           ),
         ),
         TextButton(
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (_) => const RegisterScreen(),
-              ),
+              MaterialPageRoute(builder: (_) => const RegisterScreen()),
             );
           },
           style: TextButton.styleFrom(
@@ -279,10 +264,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           child: const Text(
             'Buat akun',
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-            ),
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
           ),
         ),
       ],
@@ -299,8 +281,7 @@ class _LoginScreenState extends State<LoginScreen> {
             final compact = constraints.maxHeight < 700;
 
             return SingleChildScrollView(
-              keyboardDismissBehavior:
-                  ScrollViewKeyboardDismissBehavior.onDrag,
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               child: Center(
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 500),

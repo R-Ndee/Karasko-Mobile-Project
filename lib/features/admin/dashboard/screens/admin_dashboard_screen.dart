@@ -1,9 +1,12 @@
-﻿
+
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/themes/color_constants.dart';
 import '../../../../core/constants/themes/size_constants.dart';
 import '../../../../core/constants/themes/typography_constants.dart';
+import '../../../auth/screens/login_screen.dart';
+import '../../../customer/navigation/customer_navigation.dart';
+import '../../orders/screens/admin_order_list_screen.dart';
 import '../../products/screens/admin_product_list_screen.dart';
 
 class AdminDashboardScreen extends StatefulWidget {
@@ -16,25 +19,31 @@ class AdminDashboardScreen extends StatefulWidget {
 class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = [
-    const _DashboardContent(),
-    const AdminProductListScreen(),
-    const _AdminProfilePlaceholder(),
-  ];
-
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
   }
 
+  void _navigateToOrders() {
+    setState(() {
+      _selectedIndex = 2;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final pages = <Widget>[
+      _DashboardContent(onViewAllOrders: _navigateToOrders),
+      const AdminProductListScreen(),
+      const AdminOrderListScreen(),
+      const _AdminProfilePlaceholder(),
+    ];
     return Scaffold(
       backgroundColor: BaseColor.cream,
       body: IndexedStack(
         index: _selectedIndex,
-        children: _pages,
+        children: pages,
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
@@ -60,6 +69,11 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
             label: 'Produk',
           ),
           BottomNavigationBarItem(
+            icon: Icon(Icons.receipt_long_outlined),
+            activeIcon: Icon(Icons.receipt_long),
+            label: 'Pesanan',
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.person_outline),
             activeIcon: Icon(Icons.person),
             label: 'Profil',
@@ -71,7 +85,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
 }
 
 class _DashboardContent extends StatelessWidget {
-  const _DashboardContent();
+  const _DashboardContent({this.onViewAllOrders});
+
+  final VoidCallback? onViewAllOrders;
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +143,7 @@ class _DashboardContent extends StatelessWidget {
             Gap.h24,
             const _SalesChartCard(),
             Gap.h28,
-            const _RecentOrdersSection(),
+            _RecentOrdersSection(onViewAll: onViewAllOrders),
           ],
         ),
       ),
@@ -440,7 +456,9 @@ class _SalesChartCard extends StatelessWidget {
 }
 
 class _RecentOrdersSection extends StatelessWidget {
-  const _RecentOrdersSection();
+  const _RecentOrdersSection({this.onViewAll});
+
+  final VoidCallback? onViewAll;
 
   @override
   Widget build(BuildContext context) {
@@ -455,7 +473,7 @@ class _RecentOrdersSection extends StatelessWidget {
               style: BaseTypography.headlineSmall,
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: onViewAll,
               style: TextButton.styleFrom(
                 foregroundColor: BaseColor.caramel,
                 padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -608,10 +626,119 @@ class _AdminProfilePlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       backgroundColor: BaseColor.cream,
-      body: Center(
-        child: Text('Profil Admin'),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
+        elevation: 1,
+        shadowColor: BaseColor.karasko.withValues(alpha: 0.12),
+        title: Text(
+          'Profil Admin',
+          style: BaseTypography.headlineSmall.copyWith(
+            fontWeight: FontWeight.w800,
+            color: BaseColor.karasko,
+          ),
+        ),
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(BaseSize.s24),
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+              CircleAvatar(
+                radius: 46,
+                backgroundColor: BaseColor.karasko.withValues(alpha: 0.1),
+                child: const Icon(
+                  Icons.admin_panel_settings,
+                  size: 50,
+                  color: BaseColor.karasko,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Administrator Karasko',
+                style: BaseTypography.headlineMedium.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'admin@karasko.com',
+                style: BaseTypography.bodyMedium.copyWith(
+                  color: Colors.grey.shade600,
+                ),
+              ),
+              const SizedBox(height: 36),
+              Container(
+                decoration: BoxDecoration(
+                  color: BaseColor.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: BaseColor.charcoal.withValues(alpha: 0.07),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    ListTile(
+                      leading: const Icon(
+                        Icons.storefront_outlined,
+                        color: BaseColor.karasko,
+                      ),
+                      title: Text(
+                        'Beralih ke Tampilan Pelanggan',
+                        style: BaseTypography.titleSmall.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      subtitle: Text(
+                        'Buka mode pelanggan untuk memesan kopi',
+                        style: BaseTypography.bodySmall.copyWith(
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                      onTap: () {
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const CustomerNavigation(),
+                          ),
+                          (route) => false,
+                        );
+                      },
+                    ),
+                    const Divider(height: 1),
+                    ListTile(
+                      leading: const Icon(
+                        Icons.logout,
+                        color: Color(0xFFB34B43),
+                      ),
+                      title: Text(
+                        'Keluar',
+                        style: BaseTypography.titleSmall.copyWith(
+                          color: const Color(0xFFB34B43),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                      onTap: () {
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const LoginScreen(),
+                          ),
+                          (route) => false,
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

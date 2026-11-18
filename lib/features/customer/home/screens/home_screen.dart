@@ -1,7 +1,11 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:karasko_mobile_project/features/admin/dashboard/screens/admin_dashboard_screen.dart';
+import 'package:karasko_mobile_project/features/customer/navigation/customer_navigation.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  final bool showBottomNav;
+
+  const HomeScreen({super.key, this.showBottomNav = true});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +37,10 @@ class HomeScreen extends StatelessWidget {
                     ),
                     const SizedBox(width: 6),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
                       decoration: BoxDecoration(
                         color: const Color(0xFFC8EAD7),
                         borderRadius: BorderRadius.circular(12),
@@ -64,21 +71,38 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
         actions: [
-          Container(
-            width: 80,
-            height: 40,
-            margin: const EdgeInsets.symmetric(vertical: 10),
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(
-              color: const Color(0xFFEEEEEC),
-              borderRadius: BorderRadius.circular(9999),
-            ),
-            child: const Row(
-              children: [
-                Icon(Icons.storefront, color: Color(0xFF845326), size: 18),
-                SizedBox(width: 4),
-                Text("Admin", style: TextStyle(color: Color(0xFF1A1C1B), fontSize: 11, fontWeight: FontWeight.bold)),
-              ],
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const AdminDashboardScreen(),
+                ),
+              );
+            },
+            child: Container(
+              width: 80,
+              height: 40,
+              margin: const EdgeInsets.symmetric(vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                color: const Color(0xFFEEEEEC),
+                borderRadius: BorderRadius.circular(9999),
+              ),
+              child: const Row(
+                children: [
+                  Icon(Icons.storefront, color: Color(0xFF845326), size: 18),
+                  SizedBox(width: 4),
+                  Text(
+                    "Admin",
+                    style: TextStyle(
+                      color: Color(0xFF1A1C1B),
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           const SizedBox(width: 12),
@@ -86,7 +110,7 @@ class HomeScreen extends StatelessWidget {
             radius: 16,
             backgroundImage: NetworkImage('https://via.placeholder.com/150'),
           ),
-          const SizedBox(width: 16), 
+          const SizedBox(width: 16),
         ],
       ),
       body: SingleChildScrollView(
@@ -95,18 +119,37 @@ class HomeScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildGreetingCard(),
-          const SizedBox(height: 20),
-          _buildActiveOrderWidget(),
-          const SizedBox(height: 20),
-          const Text(
-            "Pilihan Menu",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF032217)),
-          ),
-          const SizedBox(height: 12),
-          // TODO: Filter kategori dan grid menu
+            const SizedBox(height: 20),
+            _buildActiveOrderWidget(),
+            const SizedBox(height: 20),
+            const Text(
+              "Pilihan Menu",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF032217),
+              ),
+            ),
+            const SizedBox(height: 12),
+            // TODO: Filter kategori dan grid menu
           ],
         ),
       ),
+      bottomNavigationBar: showBottomNav
+          ? CustomerBottomNavBar(
+              currentIndex: 0,
+              onTap: (index) {
+                if (index != 0) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => CustomerNavigation(initialIndex: index),
+                    ),
+                  );
+                }
+              },
+            )
+          : null,
     );
   }
 
@@ -124,27 +167,38 @@ class HomeScreen extends StatelessWidget {
         children: [
           Text(
             "Selamat Pagi, Trituwat",
-            style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold, letterSpacing: -0.5),
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              letterSpacing: -0.5,
+            ),
           ),
           SizedBox(height: 8),
           Text(
             "Awali harimu dengan racikan kopi artisanal terbaik langsung dari pemanggang pilihan.",
-            style: TextStyle(color: Color(0xFF81A291), fontSize: 14, height: 1.5),
+            style: TextStyle(
+              color: Color(0xFF81A291),
+              fontSize: 14,
+              height: 1.5,
+            ),
           ),
         ],
       ),
     );
   }
-  
+
   Widget _buildActiveOrderWidget() {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))],
+        boxShadow: const [
+          BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2)),
+        ],
       ),
-        child: Row(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
@@ -155,22 +209,40 @@ class HomeScreen extends StatelessWidget {
                   color: Color(0xFFFFDCC2),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.coffee_maker, color: Color(0xFF2E1500), size: 20),
+                child: const Icon(
+                  Icons.coffee_maker,
+                  color: Color(0xFF2E1500),
+                  size: 20,
+                ),
               ),
               const SizedBox(width: 12),
               const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("SEDANG DI SEDUH • #NG-8492", style: TextStyle(fontSize: 10, color: Color(0xFF845326), fontWeight: FontWeight.bold)),
+                  Text(
+                    "SEDANG DI SEDUH • #NG-8492",
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Color(0xFF845326),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   SizedBox(height: 2),
-                  Text("1x Flat White Oatmilk", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF1A1C1B))),
+                  Text(
+                    "1x Flat White Oatmilk",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF1A1C1B),
+                    ),
+                  ),
                 ],
               ),
             ],
           ),
           const Icon(Icons.arrow_forward, color: Color(0xFF032217), size: 18),
         ],
-      )
+      ),
     );
   }
 }

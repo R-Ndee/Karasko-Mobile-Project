@@ -1,11 +1,10 @@
-﻿
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
+import 'package:karasko_mobile_project/features/customer/home/screens/home_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/constants/themes/color_constants.dart';
 import '../../../models/product.dart';
 import '../../../providers/cart_provider.dart';
-import '../../customer/cart/screens/cart_screen.dart';
 import '../widgets/auth_text_field.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -80,9 +79,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(
-          builder: (_) => const CartScreen(),
-        ),
+        MaterialPageRoute(builder: (_) => const HomeScreen()),
         (route) => false,
       );
     });
@@ -112,10 +109,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             tooltip: 'Kembali ke login',
             padding: EdgeInsets.zero,
             alignment: Alignment.centerLeft,
-            constraints: const BoxConstraints(
-              minWidth: 40,
-              minHeight: 40,
-            ),
+            constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
             icon: const Icon(
               Icons.arrow_back_rounded,
               color: BaseColor.cream,
@@ -133,11 +127,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
           ),
           const SizedBox(height: 13),
-          Container(
-            width: 34,
-            height: 2,
-            color: BaseColor.caramel,
-          ),
+          Container(width: 34, height: 2, color: BaseColor.caramel),
           const SizedBox(height: 14),
           const Text(
             'COFFEE & DAILY MOMENTS',
@@ -189,11 +179,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         const SizedBox(height: 5),
         const Text(
           'Lengkapi informasi berikut untuk memulai.',
-          style: TextStyle(
-            color: muted,
-            fontSize: 12,
-            height: 1.5,
-          ),
+          style: TextStyle(color: muted, fontSize: 12, height: 1.5),
         ),
       ],
     );
@@ -242,9 +228,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   return 'Email wajib diisi.';
                 }
 
-                if (!RegExp(
-                  r'^[^@\s]+@[^@\s]+\.[^@\s]+$',
-                ).hasMatch(email)) {
+                if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email)) {
                   return 'Masukkan alamat email yang valid.';
                 }
 
@@ -259,9 +243,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               controller: _phoneController,
               keyboardType: TextInputType.phone,
               textInputAction: TextInputAction.next,
-              autofillHints: const [
-                AutofillHints.telephoneNumber,
-              ],
+              autofillHints: const [AutofillHints.telephoneNumber],
             ),
             const SizedBox(height: 18),
             AuthTextField(
@@ -334,9 +316,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: Checkbox(
                 value: _agreeToTerms,
                 activeColor: BaseColor.karasko,
-                side: const BorderSide(
-                  color: Color(0xFFB7BDB4),
-                ),
+                side: const BorderSide(color: Color(0xFFB7BDB4)),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5),
                 ),
@@ -350,11 +330,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               padding: EdgeInsets.only(top: 2),
               child: Text(
                 'Saya menyetujui syarat dan ketentuan serta kebijakan privasi Karasko.',
-                style: TextStyle(
-                  color: muted,
-                  fontSize: 11,
-                  height: 1.55,
-                ),
+                style: TextStyle(color: muted, fontSize: 11, height: 1.55),
               ),
             ),
           ),
@@ -372,9 +348,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         style: ElevatedButton.styleFrom(
           backgroundColor: BaseColor.karasko,
           foregroundColor: BaseColor.cream,
-          disabledBackgroundColor: BaseColor.karasko.withValues(
-            alpha: 0.7,
-          ),
+          disabledBackgroundColor: BaseColor.karasko.withValues(alpha: 0.7),
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
@@ -394,16 +368,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 children: [
                   Text(
                     'Buat Akun',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
                   ),
                   SizedBox(width: 10),
-                  Icon(
-                    Icons.arrow_forward_rounded,
-                    size: 19,
-                  ),
+                  Icon(Icons.arrow_forward_rounded, size: 19),
                 ],
               ),
       ),
@@ -417,28 +385,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
       children: [
         const Text(
           'Sudah punya akun?',
-          style: TextStyle(
-            color: muted,
-            fontSize: 12,
-          ),
+          style: TextStyle(color: muted, fontSize: 12),
         ),
         TextButton(
           onPressed: () => Navigator.maybePop(context),
           style: TextButton.styleFrom(
             foregroundColor: BaseColor.caramel,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 6,
-              vertical: 6,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
             minimumSize: Size.zero,
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
           child: const Text(
             'Masuk di sini',
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-            ),
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
           ),
         ),
       ],
@@ -455,8 +414,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             final compact = constraints.maxHeight < 700;
 
             return SingleChildScrollView(
-              keyboardDismissBehavior:
-                  ScrollViewKeyboardDismissBehavior.onDrag,
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               child: Center(
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 500),
@@ -465,9 +423,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     children: [
                       _buildBrandHeader(compact),
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 26,
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 26),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [

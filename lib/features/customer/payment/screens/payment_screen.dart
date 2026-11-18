@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../providers/cart_provider.dart';
-import '../../home/screens/home_screen.dart';
+import 'payment_success_screen.dart';
 
 class PaymentScreen extends StatefulWidget {
   final String paymentMethod;
@@ -29,6 +29,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
   static const Color cream = Color(0xFFF9F9F7);
   static const Color charcoal = Color(0xFF292B28);
   static const Color caramel = Color(0xFF845326);
+
+  bool _isProcessing = true;
 
   @override
   void initState() {
@@ -273,7 +275,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
   void _returnToHome() {
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (_) => const HomeScreen()),
+      MaterialPageRoute(
+        builder: (_) => PaymentSuccessScreen(
+          paymentMethod: widget.paymentMethod,
+        ),
+      ),
       (route) => false,
     );
   }

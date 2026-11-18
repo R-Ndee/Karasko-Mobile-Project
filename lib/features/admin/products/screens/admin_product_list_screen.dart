@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 import '../../../../core/constants/themes/color_constants.dart';
 import '../../../../core/constants/themes/size_constants.dart';
@@ -97,7 +97,7 @@ class _AdminProductListScreenState extends State<AdminProductListScreen> {
     return _products.where((product) => product.category == category).length;
   }
 
-  void _showIntegrationMessage(String feature) {
+  void _showFeedback(String message) {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
@@ -107,6 +107,10 @@ class _AdminProductListScreenState extends State<AdminProductListScreen> {
           backgroundColor: BaseColor.karasko,
         ),
       );
+  }
+
+  void _showIntegrationMessage(String feature) {
+    _showFeedback(feature);
   }
 
   Future<void> _openAddProduct() async {
@@ -499,7 +503,7 @@ class _AdminProductListScreenState extends State<AdminProductListScreen> {
     );
   }
 
-  Widget _buildProductCard(_AdminProduct product) {
+  Widget _buildProductCard(AdminProduct product) {
     final stockColor = product.stock <= 10
         ? const Color(0xFFB44B42)
         : product.stock <= 15
@@ -598,14 +602,14 @@ class _AdminProductListScreenState extends State<AdminProductListScreen> {
                 icon: Icons.edit_outlined,
                 color: BaseColor.caramel,
                 tooltip: 'Edit produk',
-                onPressed: () => _showIntegrationMessage('Edit produk'),
+                onPressed: () => _openEditProduct(product),
               ),
               Gap.h8,
               _ProductActionButton(
                 icon: Icons.delete_outline_rounded,
                 color: const Color(0xFFB44B42),
                 tooltip: 'Hapus produk',
-                onPressed: () => _showIntegrationMessage('Hapus produk'),
+                onPressed: () => _confirmDeleteProduct(product),
               ),
             ],
           ),
@@ -668,7 +672,7 @@ class _AdminProductListScreenState extends State<AdminProductListScreen> {
       width: double.infinity,
       height: 54,
       child: ElevatedButton.icon(
-        onPressed: () => _showIntegrationMessage('Tambah produk'),
+        onPressed: _openAddProduct,
         icon: const Icon(Icons.add_rounded, size: 21),
         label: Text(
           'Tambah Produk',
@@ -726,7 +730,7 @@ class _SummaryCategory extends StatelessWidget {
 }
 
 class _ProductIcon extends StatelessWidget {
-  final _AdminProduct product;
+  final AdminProduct product;
 
   const _ProductIcon({required this.product});
 
@@ -802,18 +806,4 @@ class _ProductActionButton extends StatelessWidget {
   }
 }
 
-class _AdminProduct {
-  final String name;
-  final String category;
-  final int price;
-  final int stock;
-  final IconData icon;
 
-  const _AdminProduct({
-    required this.name,
-    required this.category,
-    required this.price,
-    required this.stock,
-    required this.icon,
-  });
-}
