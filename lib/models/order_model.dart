@@ -1,4 +1,5 @@
-﻿import 'cart_item.dart';
+﻿
+import 'cart_item.dart';
 
 class OrderModel {
   final String id;
@@ -7,6 +8,9 @@ class OrderModel {
   final String paymentMethod;
   final String status;
   final DateTime createdAt;
+  final String orderType;
+  final bool useEcoPackaging;
+  final String orderNote;
 
   OrderModel({
     required this.id,
@@ -15,12 +19,21 @@ class OrderModel {
     required this.paymentMethod,
     required this.status,
     required this.createdAt,
-  }) : items = items
-            .map(
-              (item) => CartItem(
-                product: item.product,
-                quantity: item.quantity,
-              ),
-            )
-            .toList();
+    this.orderType = 'Pickup',
+    this.useEcoPackaging = false,
+    this.orderNote = '',
+  }) : items = List.unmodifiable(
+          items.map(
+            (item) => CartItem(
+              product: item.product,
+              quantity: item.quantity,
+              size: item.size,
+              sizeVolumeMl: item.sizeVolumeMl,
+              sizeExtraPrice: item.sizeExtraPrice,
+              temperature: item.temperature,
+              sugarLevel: item.sugarLevel,
+              iceLevel: item.iceLevel,
+            ),
+          ),
+        );
 }

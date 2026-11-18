@@ -1,4 +1,5 @@
-﻿import 'package:flutter/foundation.dart';
+﻿
+import 'package:flutter/foundation.dart';
 
 import '../models/order_model.dart';
 
@@ -26,6 +27,8 @@ class OrderProvider extends ChangeNotifier {
 
     final oldOrder = _orders[index];
 
+    if (oldOrder.status == status) return;
+
     _orders[index] = OrderModel(
       id: oldOrder.id,
       items: oldOrder.items,
@@ -33,6 +36,9 @@ class OrderProvider extends ChangeNotifier {
       paymentMethod: oldOrder.paymentMethod,
       status: status,
       createdAt: oldOrder.createdAt,
+      orderType: oldOrder.orderType,
+      useEcoPackaging: oldOrder.useEcoPackaging,
+      orderNote: oldOrder.orderNote,
     );
 
     notifyListeners();

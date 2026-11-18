@@ -1,4 +1,11 @@
-enum AdminOrderStatus { newOrder, preparing, ready, completed, cancelled }
+
+enum AdminOrderStatus {
+  newOrder,
+  preparing,
+  ready,
+  completed,
+  cancelled,
+}
 
 class AdminOrderLine {
   const AdminOrderLine({
@@ -23,6 +30,7 @@ class AdminOrderData {
     required this.timeLabel,
     required this.status,
     required this.items,
+    required this.totalPrice,
     required this.paymentMethod,
     this.note,
   });
@@ -32,18 +40,28 @@ class AdminOrderData {
   final String timeLabel;
   final AdminOrderStatus status;
   final List<AdminOrderLine> items;
+  final int totalPrice;
   final String paymentMethod;
   final String? note;
 
-  int get total => items.fold(0, (sum, item) => sum + item.total);
+  int get itemSubtotal {
+    return items.fold(0, (sum, item) => sum + item.total);
+  }
 
-  AdminOrderData copyWith({AdminOrderStatus? status}) {
+  int get adjustment => totalPrice - itemSubtotal;
+
+  int get total => totalPrice;
+
+  AdminOrderData copyWith({
+    AdminOrderStatus? status,
+  }) {
     return AdminOrderData(
       id: id,
       customerName: customerName,
       timeLabel: timeLabel,
       status: status ?? this.status,
       items: items,
+      totalPrice: totalPrice,
       paymentMethod: paymentMethod,
       note: note,
     );

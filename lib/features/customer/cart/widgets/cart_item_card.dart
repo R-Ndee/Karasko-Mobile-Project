@@ -21,6 +21,7 @@ class CartItemCard extends StatelessWidget {
   static const Color cream = Color(0xFFF9F9F7);
   static const Color charcoal = Color(0xFF292B28);
   static const Color caramel = Color(0xFF845326);
+  static const Color muted = Color(0xFF727974);
 
   String formatRupiah(int value) {
     final digits = value.toString();
@@ -69,7 +70,7 @@ class CartItemCard extends StatelessWidget {
     final imageUrl = item.product.imageUrl;
 
     return Container(
-      width: 82,
+      width: 76,
       height: 94,
       decoration: BoxDecoration(
         color: cream,
@@ -123,17 +124,54 @@ class CartItemCard extends StatelessWidget {
             color: charcoal,
           ),
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 5),
         Text(
-          formatRupiah(item.product.price),
+          formatRupiah(item.unitPrice),
           style: const TextStyle(
             fontSize: 12,
-            color: Colors.black54,
+            color: muted,
+            fontWeight: FontWeight.w500,
           ),
         ),
+        const SizedBox(height: 9),
+        _buildProductOptions(),
         const SizedBox(height: 12),
         _buildQuantitySelector(),
       ],
+    );
+  }
+
+  Widget _buildProductOptions() {
+    final options = [
+      '${item.size} · ${item.sizeVolumeMl} ml',
+      item.temperature,
+      item.sugarLevel,
+      if (item.temperature == 'Iced') item.iceLevel,
+    ];
+
+    return Wrap(
+      spacing: 5,
+      runSpacing: 5,
+      children: options.map((option) {
+        return Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 7,
+            vertical: 4,
+          ),
+          decoration: BoxDecoration(
+            color: cream,
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: Text(
+            option,
+            style: const TextStyle(
+              fontSize: 9,
+              color: muted,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 

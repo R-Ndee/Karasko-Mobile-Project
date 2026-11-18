@@ -1,3 +1,4 @@
+
 import 'package:flutter/widgets.dart';
 
 class BaseSize {
@@ -23,6 +24,56 @@ class BaseSize {
   static const double s64 = 64;
   static const double s72 = 72;
   static const double s80 = 80;
+}
+
+class BaseRadius {
+  BaseRadius._();
+
+  static const double sm = 4;
+  static const double defaultRadius = 8;
+  static const double md = 12;
+  static const double lg = 16;
+  static const double xl = 24;
+  static const double full = 999;
+}
+
+class BaseLayout {
+  BaseLayout._();
+
+  static const double screenWidth = 393;
+  static const double screenHeight = 852;
+
+  static const double horizontalMargin = 20;
+  static const double appBarHeight = 56;
+  static const double bottomBarHeight = 72;
+
+  static const double buttonHeight = 48;
+  static const double inputHeight = 48;
+  static const double iconButtonSize = 48;
+
+  static const double cardPadding = 16;
+  static const double sectionSpacing = 24;
+}
+
+class BasePadding {
+  BasePadding._();
+
+  static const EdgeInsets screen = EdgeInsets.symmetric(
+    horizontal: BaseLayout.horizontalMargin,
+  );
+
+  static const EdgeInsets card = EdgeInsets.all(
+    BaseLayout.cardPadding,
+  );
+
+  static const EdgeInsets section = EdgeInsets.symmetric(
+    vertical: BaseSize.s16,
+  );
+
+  static const EdgeInsets button = EdgeInsets.symmetric(
+    horizontal: BaseSize.s20,
+    vertical: BaseSize.s12,
+  );
 }
 
 class Gap {
@@ -70,6 +121,11 @@ class Gap {
   static const SizedBox w72 = SizedBox(width: BaseSize.s72);
   static const SizedBox w80 = SizedBox(width: BaseSize.s80);
 
-  static SizedBox customHeight(double value) => SizedBox(height: value);
-  static SizedBox customWidth(double value) => SizedBox(width: value);
+  static SizedBox customHeight(double value) {
+    return SizedBox(height: value);
+  }
+
+  static SizedBox customWidth(double value) {
+    return SizedBox(width: value);
+  }
 }

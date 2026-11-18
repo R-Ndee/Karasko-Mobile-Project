@@ -1,4 +1,8 @@
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:karasko_mobile_project/models/product.dart';
+import 'package:karasko_mobile_project/providers/cart_provider.dart';
 
 const _forest = Color(0xFF032217);
 const _mint = Color(0xFFC8EAD7);
@@ -17,143 +21,78 @@ class _MenuScreenState extends State<MenuScreen> {
   var _selectedCategory = 0;
 
   static const _coffee = [
-    _MenuProduct(
-      'North Signature Aren Latte',
-      'Espresso, susu, dan gula aren',
-      22000,
-      'SIGNATURE',
-      Color(0xFFD8B598),
-      Icons.local_cafe,
-    ),
-    _MenuProduct(
-      'Cold Brew Original',
-      'Seduhan dingin 18 jam',
-      28000,
-      'STEEPED',
-      Color(0xFFC7D3D0),
-      Icons.coffee,
-    ),
-    _MenuProduct(
-      'Kopi Susu Gula Aren',
-      'Favorit dengan gula aren lokal',
-      20000,
-      'FAVORIT',
-      Color(0xFFE2C9A6),
-      Icons.coffee,
-    ),
-    _MenuProduct(
-      'Caramel Macchiato',
-      'Espresso dengan karamel lembut',
-      26000,
-      'MANIS',
-      Color(0xFFE5C8B2),
-      Icons.local_cafe,
-    ),
-    _MenuProduct(
-      'Cappuccino',
-      'Espresso dan foam susu',
-      24000,
-      'CLASSIC',
-      Color(0xFFD9D0C2),
-      Icons.coffee,
-    ),
-    _MenuProduct(
-      'Cafe Mocha',
-      'Cokelat, espresso, dan susu',
-      26000,
-      'CHOCOLATE',
-      Color(0xFFC9B7AA),
-      Icons.local_cafe,
-    ),
-    _MenuProduct(
-      'Americano',
-      'Espresso dengan air pilihan',
-      18000,
-      'ESPRESSO',
-      Color(0xFFD5D9D0),
-      Icons.coffee,
-    ),
-    _MenuProduct(
-      'Vanilla Latte',
-      'Latte dengan aroma vanilla',
-      25000,
-      'CREAMY',
-      Color(0xFFE5D9C6),
-      Icons.local_cafe,
-    ),
-    _MenuProduct(
-      'Spanish Latte',
-      'Latte creamy dengan susu manis',
-      26000,
-      'CREAMY',
-      Color(0xFFD6C7AE),
-      Icons.coffee,
-    ),
-    _MenuProduct(
-      'Piccolo',
-      'Double ristretto dan microfoam',
-      22000,
-      'ESPRESSO',
-      Color(0xFFD8CBBE),
-      Icons.local_cafe,
-    ),
+    _MenuProduct('North Signature Aren Latte', 'Espresso, susu, dan gula aren', 22000, 'SIGNATURE', Color(0xFFD8B598), Icons.local_cafe),
+    _MenuProduct('Cold Brew Original', 'Seduhan dingin 18 jam', 28000, 'STEEPED', Color(0xFFC7D3D0), Icons.coffee),
+    _MenuProduct('Kopi Susu Gula Aren', 'Favorit dengan gula aren lokal', 20000, 'FAVORIT', Color(0xFFE2C9A6), Icons.coffee),
+    _MenuProduct('Caramel Macchiato', 'Espresso dengan karamel lembut', 26000, 'MANIS', Color(0xFFE5C8B2), Icons.local_cafe),
+    _MenuProduct('Cappuccino', 'Espresso dan foam susu', 24000, 'CLASSIC', Color(0xFFD9D0C2), Icons.coffee),
+    _MenuProduct('Cafe Mocha', 'Cokelat, espresso, dan susu', 26000, 'CHOCOLATE', Color(0xFFC9B7AA), Icons.local_cafe),
+    _MenuProduct('Americano', 'Espresso dengan air pilihan', 18000, 'ESPRESSO', Color(0xFFD5D9D0), Icons.coffee),
+    _MenuProduct('Vanilla Latte', 'Latte dengan aroma vanilla', 25000, 'CREAMY', Color(0xFFE5D9C6), Icons.local_cafe),
+    _MenuProduct('Spanish Latte', 'Latte creamy dengan susu manis', 26000, 'CREAMY', Color(0xFFD6C7AE), Icons.coffee),
+    _MenuProduct('Piccolo', 'Double ristretto dan microfoam', 22000, 'ESPRESSO', Color(0xFFD8CBBE), Icons.local_cafe),
   ];
 
   static const _nonCoffee = [
-    _MenuProduct(
-      'Matcha Latte',
-      'Matcha pilihan dan susu segar',
-      26000,
-      'MATCHA',
-      Color(0xFFC8D6B8),
-      Icons.emoji_food_beverage,
-    ),
-    _MenuProduct(
-      'Chocolate',
-      'Cokelat pekat dengan susu',
-      24000,
-      'CHOCOLATE',
-      Color(0xFFD6BBAA),
-      Icons.emoji_food_beverage,
-    ),
-    _MenuProduct(
-      'Hojicha Latte',
-      'Teh hojicha panggang dan susu',
-      27000,
-      'TEA',
-      Color(0xFFD9C6AA),
-      Icons.emoji_food_beverage,
-    ),
-    _MenuProduct(
-      'Lychee Tea',
-      'Teh segar dengan leci',
-      22000,
-      'REFRESHING',
-      Color(0xFFE5C6C1),
-      Icons.local_drink,
-    ),
-    _MenuProduct(
-      'Lemon Tea',
-      'Teh hitam dan lemon',
-      20000,
-      'REFRESHING',
-      Color(0xFFE3D9A9),
-      Icons.local_drink,
-    ),
+    _MenuProduct('Matcha Latte', 'Matcha pilihan dan susu segar', 26000, 'MATCHA', Color(0xFFC8D6B8), Icons.emoji_food_beverage),
+    _MenuProduct('Chocolate', 'Cokelat pekat dengan susu', 24000, 'CHOCOLATE', Color(0xFFD6BBAA), Icons.emoji_food_beverage),
+    _MenuProduct('Hojicha Latte', 'Teh hojicha panggang dan susu', 27000, 'TEA', Color(0xFFD9C6AA), Icons.emoji_food_beverage),
+    _MenuProduct('Lychee Tea', 'Teh segar dengan leci', 22000, 'REFRESHING', Color(0xFFE5C6C1), Icons.local_drink),
+    _MenuProduct('Lemon Tea', 'Teh hitam dan lemon', 20000, 'REFRESHING', Color(0xFFE3D9A9), Icons.local_drink),
   ];
 
   List<_MenuProduct> get _products =>
       _selectedCategory == 0 ? _coffee : _nonCoffee;
 
+  Product _toProduct(_MenuProduct menuProduct) {
+    final category = _selectedCategory == 0 ? 'Coffee' : 'Non-Coffee';
+
+    final productId = menuProduct.name
+        .toLowerCase()
+        .replaceAll(RegExp(r'[^a-z0-9]+'), '_')
+        .replaceAll(RegExp(r'^_|_$'), '');
+
+    return Product(
+      id: 'menu_$productId',
+      name: menuProduct.name,
+      description: menuProduct.description,
+      price: menuProduct.price,
+      category: category,
+    );
+  }
+
   Future<void> _openProduct(_MenuProduct product) async {
+    final cartProduct = _toProduct(product);
+
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => _ProductOptionsSheet(
+      builder: (sheetContext) => _ProductOptionsSheet(
         product: product,
-        onAdd: (size, quantity, total) {
-          Navigator.pop(context);
+        onAdd: (
+          size,
+          volume,
+          extraPrice,
+          temperature,
+          sugar,
+          ice,
+          quantity,
+          total,
+        ) {
+          sheetContext.read<CartProvider>().addItem(
+            cartProduct,
+            size: size,
+            sizeVolumeMl: volume,
+            sizeExtraPrice: extraPrice,
+            temperature: temperature,
+            sugarLevel: sugar,
+            iceLevel: ice,
+            quantity: quantity,
+          );
+
+          Navigator.pop(sheetContext);
+
           ScaffoldMessenger.of(this.context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
@@ -180,7 +119,7 @@ class _MenuScreenState extends State<MenuScreen> {
         titleSpacing: 16,
         title: Row(
           children: [
-            const Icon(Icons.coffee_maker, color: Color(0xFF032217), size: 28),
+            const Icon(Icons.coffee_maker, color: _forest, size: 28),
             const SizedBox(width: 8),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -190,7 +129,7 @@ class _MenuScreenState extends State<MenuScreen> {
                     const Text(
                       'Karasko',
                       style: TextStyle(
-                        color: Color(0xFF032217),
+                        color: _forest,
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
                         letterSpacing: -0.5,
@@ -198,12 +137,9 @@ class _MenuScreenState extends State<MenuScreen> {
                     ),
                     const SizedBox(width: 6),
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 2,
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFC8EAD7),
+                        color: _mint,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: const Text(
@@ -299,10 +235,7 @@ class _MenuScreenState extends State<MenuScreen> {
                 ),
                 Container(
                   margin: const EdgeInsets.only(bottom: 3),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 7,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
                   decoration: BoxDecoration(
                     color: const Color(0xFFEEEEEA),
                     borderRadius: BorderRadius.circular(18),
@@ -433,9 +366,7 @@ class _CategoryPill extends StatelessWidget {
                 height: 19,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: selected
-                      ? const Color(0xFF1A382B)
-                      : const Color(0xFFE5E5E1),
+                  color: selected ? const Color(0xFF1A382B) : const Color(0xFFE5E5E1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
@@ -501,10 +432,7 @@ class _ProductCard extends StatelessWidget {
                       left: 8,
                       bottom: 8,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 7,
-                          vertical: 4,
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
                         decoration: BoxDecoration(
                           color: Colors.white.withValues(alpha: 0.88),
                           borderRadius: BorderRadius.circular(5),
@@ -559,20 +487,35 @@ class _ProductCard extends StatelessWidget {
 }
 
 class _ProductOptionsSheet extends StatefulWidget {
-  const _ProductOptionsSheet({required this.product, required this.onAdd});
+  const _ProductOptionsSheet({
+    required this.product,
+    required this.onAdd,
+  });
 
   final _MenuProduct product;
-  final void Function(String size, int quantity, int total) onAdd;
+
+  final void Function(
+    String size,
+    int volume,
+    int extraPrice,
+    String temperature,
+    String sugar,
+    String ice,
+    int quantity,
+    int total,
+  ) onAdd;
 
   @override
   State<_ProductOptionsSheet> createState() => _ProductOptionsSheetState();
 }
 
 class _ProductOptionsSheetState extends State<_ProductOptionsSheet> {
-  static const _sizes = ['Reguler', 'Large'];
-  static const _sizeLabels = ['350 ml', '480 ml'];
-  static const _priceAdditions = [4000, 8000];
-  var _selectedSize = 0;
+  static const _sizes = ['Small', 'Medium', 'Large'];
+  static const _sizeLabels = ['250 ml', '350 ml', '480 ml'];
+  static const _sizeVolumes = [250, 350, 480];
+  static const _priceAdditions = [0, 4000, 8000];
+
+  var _selectedSize = 1;
   var _isIced = true;
   var _sugar = 'Less Sugar';
   var _ice = 'Normal Ice';
@@ -583,6 +526,7 @@ class _ProductOptionsSheetState extends State<_ProductOptionsSheet> {
   @override
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+
     return Container(
       constraints: BoxConstraints(
         maxHeight: MediaQuery.sizeOf(context).height * 0.88,
@@ -627,13 +571,9 @@ class _ProductOptionsSheetState extends State<_ProductOptionsSheet> {
                       children: [
                         Row(
                           children: [
-                            const Icon(
-                              Icons.local_fire_department,
-                              size: 13,
-                              color: _copper,
-                            ),
+                            const Icon(Icons.local_fire_department, size: 13, color: _copper),
                             const SizedBox(width: 4),
-                            Text(
+                            const Text(
                               'RACIKAN FAVORIT',
                               style: TextStyle(
                                 fontSize: 9,
@@ -664,19 +604,15 @@ class _ProductOptionsSheetState extends State<_ProductOptionsSheet> {
                 ],
               ),
               const SizedBox(height: 18),
-              _SectionHeading(
-                title: 'Pilih Ukuran Cup',
-                requiredLabel: '*Wajib',
-              ),
+              const _SectionHeading(title: 'Pilih Ukuran Cup', requiredLabel: '*Wajib'),
               const SizedBox(height: 8),
               Row(
                 children: List.generate(_sizes.length, (index) {
                   final selected = _selectedSize == index;
+
                   return Expanded(
                     child: Padding(
-                      padding: EdgeInsets.only(
-                        right: index == _sizes.length - 1 ? 0 : 7,
-                      ),
+                      padding: EdgeInsets.only(right: index == _sizes.length - 1 ? 0 : 7),
                       child: _ChoiceTile(
                         selected: selected,
                         onTap: () => setState(() => _selectedSize = index),
@@ -721,7 +657,7 @@ class _ProductOptionsSheetState extends State<_ProductOptionsSheet> {
                 }),
               ),
               const SizedBox(height: 16),
-              _SectionHeading(title: 'Suhu Penyajian', trailing: 'Bebas Biaya'),
+              const _SectionHeading(title: 'Suhu Penyajian', trailing: 'Bebas Biaya'),
               const SizedBox(height: 7),
               Row(
                 children: [
@@ -831,19 +767,14 @@ class _ProductOptionsSheetState extends State<_ProductOptionsSheet> {
                       children: [
                         _QuantityButton(
                           icon: Icons.remove,
-                          onTap: _quantity > 1
-                              ? () => setState(() => _quantity--)
-                              : null,
+                          onTap: _quantity > 1 ? () => setState(() => _quantity--) : null,
                         ),
                         SizedBox(
                           width: 28,
                           child: Text(
                             '$_quantity',
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              color: _forest,
-                              fontWeight: FontWeight.w700,
-                            ),
+                            style: const TextStyle(color: _forest, fontWeight: FontWeight.w700),
                           ),
                         ),
                         _QuantityButton(
@@ -863,15 +794,18 @@ class _ProductOptionsSheetState extends State<_ProductOptionsSheet> {
                 child: FilledButton.icon(
                   onPressed: () => widget.onAdd(
                     _sizes[_selectedSize],
+                    _sizeVolumes[_selectedSize],
+                    _priceAdditions[_selectedSize],
+                    _isIced ? 'Iced' : 'Hot',
+                    _sugar,
+                    _isIced ? _ice : 'No Ice',
                     _quantity,
                     _unitPrice * _quantity,
                   ),
                   style: FilledButton.styleFrom(
                     backgroundColor: _forest,
                     foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24),
-                    ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
                   ),
                   icon: const Icon(Icons.shopping_bag_outlined, size: 18),
                   label: Row(
@@ -879,10 +813,7 @@ class _ProductOptionsSheetState extends State<_ProductOptionsSheet> {
                     children: [
                       const Text(
                         'Tambah ke Keranjang',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                        ),
+                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
                       ),
                       Text(
                         'Rp ${_formatPrice(_unitPrice * _quantity)}',
@@ -921,38 +852,23 @@ class _SectionHeading extends StatelessWidget {
       children: [
         Text(
           title,
-          style: const TextStyle(
-            color: _forest,
-            fontSize: 12,
-            fontWeight: FontWeight.w800,
-          ),
+          style: const TextStyle(color: _forest, fontSize: 12, fontWeight: FontWeight.w800),
         ),
         if (requiredLabel != null) ...[
           const SizedBox(width: 5),
           Text(
             requiredLabel!,
-            style: const TextStyle(
-              color: Colors.red,
-              fontSize: 9,
-              fontWeight: FontWeight.w600,
-            ),
+            style: const TextStyle(color: Colors.red, fontSize: 9, fontWeight: FontWeight.w600),
           ),
         ],
         const Spacer(),
         if (trailing != null)
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-            decoration: BoxDecoration(
-              color: _forest,
-              borderRadius: BorderRadius.circular(10),
-            ),
+            decoration: BoxDecoration(color: _forest, borderRadius: BorderRadius.circular(10)),
             child: Text(
               trailing!,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 8,
-                fontWeight: FontWeight.w600,
-              ),
+              style: const TextStyle(color: Colors.white, fontSize: 8, fontWeight: FontWeight.w600),
             ),
           ),
       ],
@@ -1049,11 +965,7 @@ class _OptionGroup extends StatelessWidget {
       children: [
         Text(
           title,
-          style: const TextStyle(
-            color: _forest,
-            fontSize: 10,
-            fontWeight: FontWeight.w800,
-          ),
+          style: const TextStyle(color: _forest, fontSize: 10, fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: 6),
         for (final option in options) ...[
@@ -1082,11 +994,7 @@ class _OptionGroup extends StatelessWidget {
                         ),
                       ),
                       if (selected == option)
-                        const Icon(
-                          Icons.check_circle_outline,
-                          color: _mint,
-                          size: 12,
-                        ),
+                        const Icon(Icons.check_circle_outline, color: _mint, size: 12),
                     ],
                   ),
                 ),
