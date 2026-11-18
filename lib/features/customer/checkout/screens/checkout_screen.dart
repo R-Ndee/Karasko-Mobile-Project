@@ -1,4 +1,3 @@
-﻿
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -7,7 +6,16 @@ import '../../../../providers/cart_provider.dart';
 import '../../payment/screens/payment_screen.dart';
 
 class CheckoutScreen extends StatefulWidget {
-  const CheckoutScreen({super.key});
+  final String orderType;
+  final bool useEcoPackaging;
+  final String orderNote;
+
+  const CheckoutScreen({
+    super.key,
+    required this.orderType,
+    required this.useEcoPackaging,
+    required this.orderNote,
+  });
 
   @override
   State<CheckoutScreen> createState() => _CheckoutScreenState();
@@ -22,15 +30,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   String _paymentMethod = 'QRIS';
   String _selectedBank = 'BCA';
 
-  final TextEditingController _noteController = TextEditingController();
-
   final List<String> _banks = ['BCA', 'Mandiri', 'BRI'];
-
-  @override
-  void dispose() {
-    _noteController.dispose();
-    super.dispose();
-  }
 
   String _formatRupiah(int amount) {
     final digits = amount.toString();
@@ -38,7 +38,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
     for (int i = 0; i < digits.length; i++) {
       buffer.write(digits[i]);
-
       final remaining = digits.length - i - 1;
 
       if (remaining > 0 && remaining % 3 == 0) {
@@ -72,10 +71,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         elevation: 0,
         title: const Text(
           'Checkout',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: forestGreen,
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold, color: forestGreen),
         ),
       ),
       body: Consumer<CartProvider>(
@@ -92,10 +88,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 _buildSectionTitle('Ringkasan Pesanan'),
                 const SizedBox(height: 14),
                 ...cart.items.map(_buildProductItem),
-                const SizedBox(height: 28),
-                _buildSectionTitle('Catatan Pesanan'),
-                const SizedBox(height: 12),
-                _buildNoteField(),
+                const SizedBox(height: 24),
+                _buildSectionTitle('Detail Pesanan'),
+                const SizedBox(height: 14),
+                _buildOrderDetails(),
                 const SizedBox(height: 28),
                 _buildSectionTitle('Metode Pembayaran'),
                 const SizedBox(height: 14),
@@ -109,8 +105,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   subtitle: 'BCA, Mandiri, atau BRI',
                   icon: Icons.account_balance,
                 ),
-                if (_paymentMethod == 'Virtual Account')
-                  _buildBankSelector(),
+                if (_paymentMethod == 'Virtual Account') _buildBankSelector(),
                 _buildPaymentOption(
                   title: 'Tunai',
                   subtitle: 'Bayar langsung di meja kasir',
@@ -154,10 +149,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       children: [
                         const Text(
                           'Total Pembayaran',
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: Colors.black54,
-                          ),
+                          style: TextStyle(fontSize: 11, color: Colors.black54),
                         ),
                         const SizedBox(height: 4),
                         Text(
@@ -181,6 +173,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           MaterialPageRoute(
                             builder: (_) => PaymentScreen(
                               paymentMethod: _paymentMethodLabel,
+                              orderType: widget.orderType,
+                              useEcoPackaging: widget.useEcoPackaging,
+                              orderNote: widget.orderNote,
                             ),
                           ),
                         );
@@ -203,11 +198,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.shopping_bag_outlined,
-              size: 64,
-              color: caramel,
-            ),
+            const Icon(Icons.shopping_bag_outlined, size: 64, color: caramel),
             const SizedBox(height: 16),
             const Text(
               'Keranjang masih kosong',
@@ -226,7 +217,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             const SizedBox(height: 20),
             OutlinedButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Kembali ke Keranjang'),
+              child: const Text('Kembali'),
             ),
           ],
         ),
@@ -270,18 +261,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     imageUrl,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
-                      return const Icon(
-                        Icons.coffee,
-                        size: 30,
-                        color: caramel,
-                      );
+                      return const Icon(Icons.coffee, size: 30, color: caramel);
                     },
                   )
-                : const Icon(
-                    Icons.coffee,
-                    size: 30,
-                    color: caramel,
-                  ),
+                : const Icon(Icons.coffee, size: 30, color: caramel),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -299,10 +282,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 const SizedBox(height: 5),
                 Text(
                   '${item.quantity} x ${_formatRupiah(item.product.price)}',
-                  style: const TextStyle(
-                    fontSize: 11,
-                    color: Colors.black54,
-                  ),
+                  style: const TextStyle(fontSize: 11, color: Colors.black54),
                 ),
               ],
             ),
@@ -321,26 +301,93 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     );
   }
 
-  Widget _buildNoteField() {
-    return TextField(
-      controller: _noteController,
-      maxLines: 3,
-      maxLength: 150,
-      decoration: InputDecoration(
-        hintText: 'Contoh: Kurangi gula, tanpa sedotan...',
-        hintStyle: const TextStyle(
-          fontSize: 12,
-          color: Colors.black38,
-        ),
-        filled: true,
-        fillColor: Colors.white,
-        counterStyle: const TextStyle(fontSize: 10),
-        contentPadding: const EdgeInsets.all(14),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
-        ),
+  Widget _buildOrderDetails() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
       ),
+      child: Column(
+        children: [
+          _buildDetailRow(
+            icon: widget.orderType == 'Pickup'
+                ? Icons.shopping_bag_outlined
+                : Icons.restaurant_outlined,
+            title: 'Jenis Pesanan',
+            value: widget.orderType,
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 13),
+            child: Divider(height: 1),
+          ),
+          _buildDetailRow(
+            icon: Icons.eco_outlined,
+            title: 'Eco Packaging',
+            value: widget.useEcoPackaging ? 'Aktif' : 'Tidak aktif',
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 13),
+            child: Divider(height: 1),
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Icon(Icons.notes_outlined, size: 19, color: caramel),
+              const SizedBox(width: 10),
+              const Expanded(
+                child: Text(
+                  'Catatan Pesanan',
+                  style: TextStyle(fontSize: 12, color: Colors.black54),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                flex: 2,
+                child: Text(
+                  widget.orderNote.isEmpty
+                      ? 'Tidak ada catatan'
+                      : widget.orderNote,
+                  textAlign: TextAlign.end,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: charcoal,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDetailRow({
+    required IconData icon,
+    required String title,
+    required String value,
+  }) {
+    return Row(
+      children: [
+        Icon(icon, size: 19, color: caramel),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            title,
+            style: const TextStyle(fontSize: 12, color: Colors.black54),
+          ),
+        ),
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: forestGreen,
+          ),
+        ),
+      ],
     );
   }
 
@@ -380,8 +427,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     title == 'QRIS'
                         ? 'QRIS Barista Mock'
                         : title == 'Virtual Account'
-                            ? 'Virtual Account Simulasi'
-                            : 'Tunai di Meja Kasir',
+                        ? 'Virtual Account Simulasi'
+                        : 'Tunai di Meja Kasir',
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
@@ -391,18 +438,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   const SizedBox(height: 4),
                   Text(
                     subtitle,
-                    style: const TextStyle(
-                      fontSize: 11,
-                      color: Colors.black54,
-                    ),
+                    style: const TextStyle(fontSize: 11, color: Colors.black54),
                   ),
                 ],
               ),
             ),
             Icon(
-              isSelected
-                  ? Icons.radio_button_checked
-                  : Icons.radio_button_off,
+              isSelected ? Icons.radio_button_checked : Icons.radio_button_off,
               color: isSelected ? forestGreen : Colors.black38,
             ),
           ],
@@ -515,15 +557,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Icon(
-          Icons.verified_user_outlined,
-          size: 18,
-          color: caramel,
-        ),
+        const Icon(Icons.verified_user_outlined, size: 18, color: caramel),
         const SizedBox(width: 10),
         Expanded(
           child: Text(
-            'Pesanan Karasko diproses dengan simulasi pembayaran untuk keperluan demonstrasi aplikasi.',
+            'Pesanan Karasko diproses dengan simulasi pembayaran '
+            'untuk keperluan demonstrasi aplikasi.',
             style: TextStyle(
               fontSize: 10,
               height: 1.5,

@@ -1,6 +1,8 @@
 ﻿
 import 'package:flutter/material.dart';
 
+import '../../../core/constants/themes/color_constants.dart';
+
 class AuthTextField extends StatefulWidget {
   const AuthTextField({
     super.key,
@@ -34,8 +36,9 @@ class AuthTextField extends StatefulWidget {
 }
 
 class _AuthTextFieldState extends State<AuthTextField> {
-  static const Color primary = Color(0xFF032217);
   static const Color muted = Color(0xFF777C75);
+  static const Color borderColor = Color(0xFFE3E6DF);
+  static const Color errorColor = Color(0xFFB3261E);
 
   bool _obscureText = true;
 
@@ -47,7 +50,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
         Text(
           widget.label,
           style: const TextStyle(
-            color: primary,
+            color: BaseColor.karasko,
             fontSize: 12,
             fontWeight: FontWeight.w700,
           ),
@@ -62,20 +65,28 @@ class _AuthTextFieldState extends State<AuthTextField> {
           textInputAction: widget.textInputAction,
           onFieldSubmitted: widget.onFieldSubmitted,
           textCapitalization: widget.textCapitalization,
+          cursorColor: BaseColor.karasko,
+          textAlignVertical: TextAlignVertical.center,
           style: const TextStyle(
-            color: primary,
+            color: BaseColor.charcoal,
             fontSize: 14,
+            fontWeight: FontWeight.w500,
           ),
           decoration: InputDecoration(
             hintText: widget.hint,
             hintStyle: const TextStyle(
               color: Color(0xFF9DA29B),
               fontSize: 13,
+              fontWeight: FontWeight.w400,
             ),
             prefixIcon: Icon(
               widget.icon,
               color: muted,
-              size: 20,
+              size: 19,
+            ),
+            prefixIconConstraints: const BoxConstraints(
+              minWidth: 46,
+              minHeight: 48,
             ),
             suffixIcon: widget.isPassword
                 ? IconButton(
@@ -87,50 +98,61 @@ class _AuthTextFieldState extends State<AuthTextField> {
                         _obscureText = !_obscureText;
                       });
                     },
+                    splashRadius: 20,
                     icon: Icon(
                       _obscureText
                           ? Icons.visibility_outlined
                           : Icons.visibility_off_outlined,
                       color: muted,
-                      size: 20,
+                      size: 19,
                     ),
                   )
                 : null,
             filled: true,
             fillColor: const Color(0xFFFCFCFA),
+            isDense: true,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 14,
-              vertical: 16,
+              vertical: 15,
+            ),
+            errorStyle: const TextStyle(
+              color: errorColor,
+              fontSize: 11,
+              height: 1.3,
+              fontWeight: FontWeight.w500,
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
               borderSide: const BorderSide(
-                color: Color(0xFFE3E6DF),
+                color: borderColor,
+                width: 1,
               ),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
               borderSide: const BorderSide(
-                color: Color(0xFFE3E6DF),
+                color: borderColor,
+                width: 1,
               ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
               borderSide: const BorderSide(
-                color: primary,
+                color: BaseColor.karasko,
                 width: 1.4,
               ),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
               borderSide: const BorderSide(
-                color: Color(0xFFB3261E),
+                color: errorColor,
+                width: 1,
               ),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
               borderSide: const BorderSide(
-                color: Color(0xFFB3261E),
+                color: errorColor,
                 width: 1.4,
               ),
             ),

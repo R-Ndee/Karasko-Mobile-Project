@@ -1,12 +1,23 @@
-﻿import 'package:flutter/material.dart';
-import 'payment_success_screen.dart';
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../../../providers/cart_provider.dart';
+import '../../home/screens/home_screen.dart';
 
 class PaymentScreen extends StatefulWidget {
   final String paymentMethod;
+  final String orderType;
+  final bool useEcoPackaging;
+  final String orderNote;
 
   const PaymentScreen({
     super.key,
     required this.paymentMethod,
+    required this.orderType,
+    required this.useEcoPackaging,
+    required this.orderNote,
   });
 
   @override
@@ -16,28 +27,25 @@ class PaymentScreen extends StatefulWidget {
 class _PaymentScreenState extends State<PaymentScreen> {
   static const Color forestGreen = Color(0xFF032217);
   static const Color cream = Color(0xFFF9F9F7);
+  static const Color charcoal = Color(0xFF292B28);
   static const Color caramel = Color(0xFF845326);
 
   @override
   void initState() {
     super.initState();
-    _startPaymentSimulation();
+    _processPayment();
   }
 
-  Future<void> _startPaymentSimulation() async {
-    await Future.delayed(const Duration(seconds: 2));
+  Future<void> _processPayment() async {
+    await Future.delayed(const Duration(seconds: 1));
 
     if (!mounted) return;
 
-    // Otomatis pindah ke halaman PaymentSuccessScreen sambil membawa data paymentMethod
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PaymentSuccessScreen(
-          paymentMethod: widget.paymentMethod,
-        ),
-      ),
-    );
+    context.read<CartProvider>().clearCart();
+
+    setState(() {
+      _isProcessing = false;
+    });
   }
 
   @override
@@ -51,83 +59,222 @@ class _PaymentScreenState extends State<PaymentScreen> {
         automaticallyImplyLeading: false,
         title: const Text(
           'Pembayaran',
+          style: TextStyle(fontWeight: FontWeight.bold, color: forestGreen),
+        ),
+      ),
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 400),
+              child: _isProcessing
+                  ? _buildProcessingState()
+                  : _buildCompletedState(),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProcessingState() {
+    return Column(
+      key: const ValueKey('processing'),
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          width: 108,
+          height: 108,
+          decoration: BoxDecoration(
+            color: forestGreen.withValues(alpha: 0.08),
+            shape: BoxShape.circle,
+          ),
+          child: const Center(
+            child: SizedBox(
+              width: 42,
+              height: 42,
+              child: CircularProgressIndicator(
+                strokeWidth: 3,
+                color: forestGreen,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 28),
+        const Text(
+          'Memproses Pembayaran',
+          textAlign: TextAlign.center,
           style: TextStyle(
+            fontSize: 21,
             fontWeight: FontWeight.bold,
             color: forestGreen,
           ),
         ),
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(28),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+        const SizedBox(height: 10),
+        const Text(
+          'Mohon tunggu sebentar. Kami sedang memproses '
+          'simulasi pembayaran pesanan kamu.',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 13, height: 1.6, color: Colors.black54),
+        ),
+        const SizedBox(height: 24),
+        _buildPaymentInformation(),
+      ],
+    );
+  }
+
+  Widget _buildCompletedState() {
+    return Column(
+      key: const ValueKey('completed'),
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          width: 108,
+          height: 108,
+          decoration: BoxDecoration(
+            color: forestGreen.withValues(alpha: 0.09),
+            shape: BoxShape.circle,
+          ),
+          child: const Icon(
+            Icons.check_circle_rounded,
+            size: 66,
+            color: forestGreen,
+          ),
+        ),
+        const SizedBox(height: 28),
+        const Text(
+          'Simulasi Selesai',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 23,
+            fontWeight: FontWeight.bold,
+            color: forestGreen,
+          ),
+        ),
+        const SizedBox(height: 10),
+        const Text(
+          'Simulasi pembayaran berhasil diselesaikan. '
+          'Terima kasih telah memesan di Karasko.',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 13, height: 1.6, color: Colors.black54),
+        ),
+        const SizedBox(height: 24),
+        _buildPaymentInformation(),
+        const SizedBox(height: 28),
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(13),
+          decoration: BoxDecoration(
+            color: const Color(0xFFFFF4E8),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: const Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(
-                width: 68,
-                height: 68,
-                child: CircularProgressIndicator(
-                  color: forestGreen,
-                  strokeWidth: 5,
-                ),
-              ),
-              const SizedBox(height: 32),
-              const Text(
-                'Memproses Pembayaran',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: forestGreen,
-                ),
-              ),
-              const SizedBox(height: 12),
-              const Text(
-                'Mohon tunggu sebentar.\nPembayaran kamu sedang diproses.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 14,
-                  height: 1.5,
-                  color: Colors.black54,
-                ),
-              ),
-              const SizedBox(height: 24),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 18,
-                  vertical: 12,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(
-                      Icons.payment,
-                      color: caramel,
-                      size: 20,
-                    ),
-                    const SizedBox(width: 10),
-                    Flexible(
-                      child: Text(
-                        widget.paymentMethod,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: forestGreen,
-                        ),
-                      ),
-                    ),
-                  ],
+              Icon(Icons.info_outline, size: 18, color: caramel),
+              SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  'Ini hanya simulasi untuk demonstrasi aplikasi. '
+                  'Tidak ada transaksi atau pemotongan uang sungguhan.',
+                  style: TextStyle(fontSize: 11, height: 1.5, color: charcoal),
                 ),
               ),
             ],
           ),
         ),
+        const SizedBox(height: 28),
+        SizedBox(
+          width: double.infinity,
+          height: 52,
+          child: ElevatedButton(
+            onPressed: _returnToHome,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: forestGreen,
+              foregroundColor: Colors.white,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            child: const Text(
+              'Kembali ke Beranda',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPaymentInformation() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
       ),
+      child: Column(
+        children: [
+          _buildInfoRow('Metode Pembayaran', widget.paymentMethod),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 12),
+            child: Divider(height: 1),
+          ),
+          _buildInfoRow('Jenis Pesanan', widget.orderType),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 12),
+            child: Divider(height: 1),
+          ),
+          _buildInfoRow(
+            'Eco Packaging',
+            widget.useEcoPackaging ? 'Aktif' : 'Tidak aktif',
+          ),
+          if (widget.orderNote.isNotEmpty) ...[
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 12),
+              child: Divider(height: 1),
+            ),
+            _buildInfoRow('Catatan', widget.orderNote),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(String title, String value) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Text(
+            title,
+            style: const TextStyle(fontSize: 12, color: Colors.black54),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            value,
+            textAlign: TextAlign.end,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: charcoal,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _returnToHome() {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => const HomeScreen()),
+      (route) => false,
     );
   }
 }
