@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "939271385303",
+    "project_id": "karasko-app",
+    "storage_bucket": "karasko-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:939271385303:android:289f747d7c856271d20092",
+        "android_client_info": {
+          "package_name": "com.example.karasko_mobile_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDs6JV7Z2q-8eHvihitFC8otD4UC6m6xQQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:939271385303:android:4411064ec5c7034fd20092",
+        "android_client_info": {
+          "package_name": "com.karasko.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDs6JV7Z2q-8eHvihitFC8otD4UC6m6xQQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
